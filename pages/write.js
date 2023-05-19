@@ -1,0 +1,154 @@
+import Head from 'next/head'
+import { Editor } from '@tinymce/tinymce-react'
+import { useEffect, useState } from 'react';
+import Swal from 'sweetalert2';
+
+function Write() {
+
+    useEffect(() => {
+        const timer = setTimeout(() => {
+            if (typeof document !== 'undefined') {
+                let icon = document.getElementsByClassName('tox-notification__dismiss tox-button tox-button--naked tox-button--icon')[0];
+                if (icon) {
+                    icon.click();
+                }
+            }
+        }, 5000);
+
+        return () => clearTimeout(timer);
+    }, [])
+
+    const [blog, setBlog] = useState({ title: "", image: "", content: "", author: "645cef8db3f2b97c88835466" })
+    const [isValid, setIsValid] = useState({ title: true, image: true });
+
+    const submitBlog = () => {
+
+        if (blog.title.trim() === '') {
+            let newIsValid = { ...isValid }
+            newIsValid = { ...newIsValid, title: false };
+            if (blog.image.trim() === '') {
+                newIsValid = { ...newIsValid, image: false };
+            }
+            setIsValid(newIsValid)
+            return;
+        }
+
+        if (blog.image.trim() === '') {
+            setIsValid({ ...isValid, image: false });
+            return;
+        }
+
+        const plainTextContent = blog.content.replace(/<[^>]+>/g, '');
+        const wordCount = plainTextContent.trim().split(/\s+/).length;
+
+        if (wordCount < 20) {
+            Swal.fire({
+                icon: 'error',
+                title: 'Invalid Content',
+                text: `Content must have at least 20 words.`,
+            });
+            return;
+        }
+
+        Swal.fire({
+            title: 'Saving your blog...',
+            showCancelButton: true,
+            showConfirmButton: false,
+            didOpen: () => {
+                Swal.showLoading();
+                return fetch("/api/create", {
+                    method: 'POST',
+                    body: JSON.stringify(blog),
+                    headers: {
+                        'Content-Type': 'application/json'
+                    }
+                }).then(response => {
+                    return response.json().then(data => {
+                        if (!response.ok) {
+                            throw new Error(data.error || response.statusText);
+                        }
+                        Swal.fire({
+                            icon: 'success',
+                            title: `Saved`,
+                            text: 'Blog saved successfully'
+                        })
+                        return data;
+                    });
+                }).catch(error => {
+                    console.log(error)
+                    Swal.fire({
+                        icon: 'error',
+                        title: 'Error',
+                        text: `${error}`
+                    })
+                })
+            },
+            allowOutsideClick: () => !Swal.isLoading()
+        }).then((result) => {
+            if (result.isConfirmed) {
+                Swal.fire({
+                    icon: 'success',
+                    title: `Saved`,
+                    text: 'Blog saved successfully'
+                })
+            }
+        })
+    }
+
+    const handleEditorChange = (content, editor) => {
+        setBlog({ ...blog, content })
+    }
+
+    const handleInputChange = (e) => {
+        if (e.target.value.trim() == '') setIsValid({ ...isValid, [e.target.name]: false }); else setIsValid({ ...isValid, [e.target.name]: true })
+        setBlog({ ...blog, [e.target.name]: e.target.value })
+    }
+
+    return (
+        <>
+            <Head>
+                <title>Write a Blog</title>
+            </Head>
+            <div className="container mt-4">
+                <div className="row">
+                    <div className="form-group mb-3 col-md-5">
+                        <label htmlFor="title">Title</label>
+                        <input type="text" className={"form-control " + (isValid.title ? '' : 'is-invalid')} id="title" name="title" onChange={handleInputChange} value={blog.title} />
+                        <div className="invalid-feedback">
+                            Please enter a title.
+                        </div>
+                    </div>
+                    <div className="form-group mb-3 col-md-5">
+                        <label htmlFor="image">Cover Image URL</label>
+                        <input type="text" className={"form-control " + (isValid.image ? '' : 'is-invalid')} id="image" name="image" onChange={handleInputChange} value={blog.image} />
+                        <div className="invalid-feedback">
+                            Please enter an image URL.
+                        </div>
+                    </div>
+                    <div className="form-group mb-3">
+                        <label htmlFor="content">Content</label>
+                        <Editor
+                            id="content-editor"
+                            instanceId="content-editor"
+                            initialValue="<p>Start writing here...</p>"
+                            init={{
+                                height: 500,
+                                skin: "oxide",
+                                plugins:
+                                    'advlist autolink lists link image charmap preview anchor\
+                                    searchreplace visualblocks code fullscreen\
+                                    insertdatetime media table code help wordcount',
+                                toolbar: 'undo redo | styles | bold italic strikethrough forecolor backcolor | alignleft aligncenter alignright alignjustify | outdent indent | bullist numlist | formatselect | removeformat'
+                            }}
+                            onEditorChange={handleEditorChange}
+                            value={blog.content}
+                        />
+                    </div>
+                </div>
+                <button type="submit" onClick={submitBlog} className="btn btn-primary mb-3">Submit</button>
+            </div>
+        </>
+    );
+}
+
+export default Write;
