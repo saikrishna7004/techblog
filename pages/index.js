@@ -14,7 +14,7 @@ const Home = (props) => {
 		fetch('/api/latest/').then(d => d.json()).then(data => {
 			setLoading(false)
 			setPosts(data.blogs)
-		}).catch(error=>console.log(error))
+		}).catch(error => console.log(error))
 	}, [])
 
 	const loadMore = () => {
@@ -36,16 +36,20 @@ const Home = (props) => {
 		}
 	}
 
-	const truncate = (text) => {
-		if (!text) return ""
-		const words = text.split(' ')
-		let finalText = text
-		if (words.length > 10) {
-			const shortened = words.slice(0, 10).join(' ')
-			const ellipsis = '...'
-			finalText = `${shortened} ${ellipsis}`
+	const truncate = (text, maxLength) => {
+		if (!text) return "";
+		if (text.length <= maxLength) return text;
+
+		text = text.replace(/<[^>]+>/g, '')
+
+		let truncatedText = text.substr(0, maxLength);
+		const lastSpaceIndex = truncatedText.lastIndexOf(" ");
+
+		if (lastSpaceIndex !== -1) {
+			truncatedText = truncatedText.substr(0, lastSpaceIndex);
 		}
-		return finalText
+
+		return truncatedText+'...'
 	}
 
 	return (
@@ -59,7 +63,7 @@ const Home = (props) => {
 					<div key={post._id} className="col-md-6 col-sm-12 col-lg-4">
 						<Blog
 							title={post.title}
-							summary={truncate(post.content)}
+							summary={truncate(post.content, 80)}
 							slug={post.slug}
 							image={post.image}
 						/>
@@ -67,8 +71,8 @@ const Home = (props) => {
 				))}
 				{
 					loading && <div className="mb-4">
-						<svg class="spinner" viewBox="0 0 50 50">
-							<circle class="path" cx="25" cy="25" r="20" fill="none" stroke-width="5"></circle>
+						<svg className="spinner" viewBox="0 0 50 50">
+							<circle className="path" cx="25" cy="25" r="20" fill="none" strokeWidth="5"></circle>
 						</svg>
 					</div>
 				}

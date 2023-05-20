@@ -2,21 +2,14 @@ import Head from 'next/head'
 import { Editor } from '@tinymce/tinymce-react'
 import { useEffect, useState } from 'react';
 import Swal from 'sweetalert2';
+import { getSession } from 'next-auth/react';
 
-function Write() {
+function Write({ login }) {
 
-    useEffect(() => {
-        const timer = setTimeout(() => {
-            if (typeof document !== 'undefined') {
-                let icon = document.getElementsByClassName('tox-notification__dismiss tox-button tox-button--naked tox-button--icon')[0];
-                if (icon) {
-                    icon.click();
-                }
-            }
-        }, 5000);
-
-        return () => clearTimeout(timer);
-    }, [])
+    if(!login) return <div className='container my-4'>
+        <h4>Want to contribute?</h4>
+        <p>Reach out to us at our mail to get your credentials and start contributing the blogs.</p>
+    </div>
 
     const [blog, setBlog] = useState({ title: "", image: "", content: "", author: "645cef8db3f2b97c88835466" })
     const [isValid, setIsValid] = useState({ title: true, image: true });
@@ -152,3 +145,14 @@ function Write() {
 }
 
 export default Write;
+
+export async function getServerSideProps(context) {
+    const session = await getSession(context)
+    // console.log("Session", session?.user)
+    return {
+        props: {
+            login: session ? true : false,
+            session: session
+        }
+    }
+}

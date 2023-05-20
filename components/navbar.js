@@ -2,6 +2,8 @@ import 'bootstrap/dist/css/bootstrap.min.css'
 import Link from 'next/link'
 import { useEffect } from 'react';
 import NavLink from './navlink';
+import { getSession, signIn, signOut, useSession } from 'next-auth/react';
+import { useRouter } from 'next/router';
 
 
 const Navbar = () => {
@@ -10,6 +12,9 @@ const Navbar = () => {
         require("bootstrap/js/dist/collapse");
     }, []);
 
+    const router = useRouter()
+    const { data: session, status } = useSession()
+    
     return (
         <nav className="navbar navbar-expand-lg" style={{background: "var(--navbar-bg)"}}>
             <div className="container-fluid">
@@ -23,14 +28,23 @@ const Navbar = () => {
                             <NavLink className="nav-link" href="/">Home</NavLink>
                         </li>
                         <li className="nav-item">
+                            <NavLink className="nav-link" href="/blog">Blogs</NavLink>
+                        </li>
+                        <li className="nav-item">
                             <NavLink className="nav-link" href="/request">Request</NavLink>
                         </li>
                         <li className="nav-item">
                             <NavLink className="nav-link" href="/write">Write</NavLink>
                         </li>
-                        <li className="nav-item">
-                            <NavLink className="nav-link" href="/login">Login</NavLink>
-                        </li>
+                        {status!="loading" && !session && <li className="nav-item">
+                            <NavLink className="nav-link" href={(router.asPath.indexOf('/login')>-1)?router.asPath:("/login?next="+router.asPath)}>Login</NavLink>
+                        </li>}
+                        {session && <li className="nav-item">
+                            <NavLink className="nav-link" href="/api/auth/signout" onClick={(e)=>{
+                                e.preventDefault()
+                                signOut()
+                            }}>Logout</NavLink>
+                        </li>}
                     </ul>
                 </div>
             </div>

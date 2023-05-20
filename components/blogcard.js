@@ -47,15 +47,15 @@ export default function BlogCard({ title, summary, slug, image }) {
     return (
         <div href={`/blog/${slug}`} className="blog-card" style={{borderRadius: '5px'}}>
             <div className="card" style={{ background: avgColor }}>
-                <Link href={`/blog/${slug}`} className='p-3'>
-                    <img className="card-img-top" style={{aspectRatio: 1.5, objectFit: 'contain'}} src={image} alt={title} ref={ref} />
+                <Link href={`/blog/${slug}`}>
+                    <img className="card-img-top" style={{aspectRatio: 2, objectFit: 'contain'}} src={image} alt={title} ref={ref} />
                 </Link>
                 <div className="card-body">
                     <h5 className="card-title">{title}</h5>
                     <p className="card-text">{summary}</p>
                     <div className="row align-items-center mx-1">
                         <Link href={`/blog/${slug}`} className="btn btn-primary col-auto">Read More</Link>
-                        <Link href={`/blog/${slug}/edit`} className="col-auto ms-auto"><FontAwesomeIcon icon={faEdit} size="x" /></Link>
+                        <Link href={`/blog/${slug}/edit`} className="col-auto ms-auto"><FontAwesomeIcon icon={faEdit} size="1x" /></Link>
                     </div>
                 </div>
             </div>

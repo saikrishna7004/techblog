@@ -1,15 +1,26 @@
 import { useRouter } from 'next/router'
 import React, { useEffect, useState } from 'react'
-import { formatDistanceToNow } from 'date-fns'
 import { Shimmer } from 'react-shimmer'
+import Link from 'next/link'
+import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
+import { faAngleLeft } from '@fortawesome/free-solid-svg-icons'
+import FloatingActionButton from '../../components/fab'
+import { getSession, useSession } from 'next-auth/react'
+import Head from 'next/head'
 
-const BlogPost = () => {
+const BlogPost = ({login}) => {
     const router = useRouter()
     const slug = router.query.slug
 
     const [blog, setBlog] = useState({})
     const [author, setAuthor] = useState({})
-    const [loading, setLoading] = useState(false)
+    const [loading, setLoading] = useState(true)
+    const { data: session, status } = useSession()
+
+    useEffect(() => {
+        console.log(session?.user)
+    }, [])
+    
 
     if (router.isFallback) {
         return <div>Loading...</div>;
@@ -33,7 +44,6 @@ const BlogPost = () => {
                 'Content-Type': 'application/json'
             }
         }).then(data => data.json()).then(data => {
-            console.log(data);
             setBlog({ ...data, author: null });
             setAuthor({ ...data.author, createdAt: new Date(data.author.createdAt) })
             setLoading(false)
@@ -46,44 +56,61 @@ const BlogPost = () => {
     }, [slug])
 
     return (
-        <main className="container my-3">
-            <div className="row">
-                <div className="col-md-8 my-4">
-                    {
-                        blog._id ? <>
-                            <h1 className="mb-3">{blog.title}</h1>
-                            <p className="text-muted">{new Date(blog.createdAt).toLocaleString("en-US", options)}</p>
-                            <hr />
-                            <div className="text-center" style={{overflowX: 'auto'}}><img className="mt-3 mb-4" style={{maxWidth: '400px'}} src={blog.image} alt={blog.title} /></div>
-                            <div className='content' dangerouslySetInnerHTML={{ __html: blog.content }} />
-                        </> : (loading ? (<>
-                            <Shimmer width={500} height={20} duration={1500}/>
-                            <Shimmer width={400} height={20} duration={1500}/>
-                            <Shimmer width={200} height={200} duration={1500}/>
-                            <Shimmer width={450} height={20} duration={1500}/>
-                        </>) : <div>
-                            Blog doesn't exist
-                        </div>)
-                    }
-                </div>
-                <div className="col-md-4 my-4">
-                    {
-                        (author.createdAt && !loading) && <div className="author-info">
-                            <div className="row align-items-center">
-                                <div className="col-auto"><img src="/person.jpg" alt="Author" width={50} height={50} className="rounded-circle my-3" /></div>
-                                <div className="col-auto">
-                                    <h4 className="mb-1">{author.firstName} {author.lastName}</h4>
-                                    <p className="text-muted mb-0" style={{ fontSize: "14px" }}>Joined {formatDistanceToNow(author.createdAt, { addSuffix: true })}</p>
+        <main className='mx-auto' style={{ maxWidth: '900px' }}>
+            <Head>
+                <title>{blog._id && blog.title}</title>
+            </Head>
+            <div className="my-4 w-100">
+                {
+                    blog._id ? <>
+                        <div className="d-flex flex-column-reverse flex-sm-column">
+                            <div className='px-4'>
+                                <nav className='my-4 d-sm-block d-none' aria-label="breadcrumb">
+                                    <ol className="breadcrumb">
+                                        <li className="breadcrumb-item"><Link href="/">Home</Link></li>
+                                        <li className="breadcrumb-item"><Link href="/blog">Blogs</Link></li>
+                                        <li className="breadcrumb-item active" aria-current="page">{blog.title}</li>
+                                    </ol>
+                                </nav>
+                                <Link href="/" className='d-flex align-items-center my-4 d-sm-none'><FontAwesomeIcon icon={faAngleLeft} size='2xs'/>&nbsp;&nbsp;Blogs</Link>
+                                <h1 className="mb-3">{blog.title}</h1>
+                                <p className="text-muted fs-6">{new Date(blog.createdAt).toLocaleString("en-US", options)}</p>
+                                <div className="d-flex align-items-center">
+                                    <img src="/person.jpg" alt="Author" width={30} height={30} className="rounded-circle my-3" />
+                                    <div className="mx-2">
+                                        <p className="mb-0" style={{ fontSize: '18px' }}>{author.firstName} {author.lastName}</p>
+                                    </div>
                                 </div>
                             </div>
-                            <p className="my-2">{author.bio}</p>
+                            <div className="text-center px-sm-4" style={{ overflowX: 'auto' }}>
+                                <img className="mt-3 mb-4 w-100" style={{ display: 'block', margin: '0 auto' }} src={blog.image} alt={blog.title} />
+                            </div>
                         </div>
-                    }
-                </div>
+                        <div className='content px-4' dangerouslySetInnerHTML={{ __html: blog.content }} />
+                    </> : (loading ? (<>
+                        <Shimmer width={500} height={20} duration={1500} />
+                        <Shimmer width={400} height={20} duration={1500} />
+                        <Shimmer width={200} height={200} duration={1500} />
+                        <Shimmer width={450} height={20} duration={1500} />
+                    </>) : <div>
+                        Blog doesn't exist
+                    </div>)
+                }
             </div>
-                
+            {login && <FloatingActionButton link={router.asPath+'/edit'} />}
         </main>
     )
 }
 
 export default BlogPost
+
+export async function getServerSideProps(context) {
+    const session = await getSession(context)
+    // console.log("Session", session?.user)
+    return {
+        props: {
+            login: session ? true : false,
+            session: session
+        }
+    }
+}

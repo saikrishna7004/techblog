@@ -10,7 +10,7 @@ connect();
 
 export default async function handler(req, res) {
     try {
-        console.log(req.body)
+        // console.log(req.body)
         const blog = await BlogPost.create({
             ...req.body, slug: slugify(req.body.title, {
                 remove: /[*+~.()'"!:@]/g,
