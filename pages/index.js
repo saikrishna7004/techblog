@@ -1,71 +1,95 @@
 import Head from 'next/head'
 import Blog from '../components/blogcard'
 import { useEffect, useState } from 'react'
+import { useSession } from 'next-auth/react'
+import { TypeAnimation } from 'react-type-animation'
+import Link from 'next/link'
 
 const Home = (props) => {
 
-	const [posts, setPosts] = useState([...props.posts])
-	const [page, setPage] = useState(1)
+	const [weekly, setWeekly] = useState([...props.weekly])
+	const [latest, setLatest] = useState([...props.latest])
 	const [loading, setLoading] = useState(false)
-	const [more, setMore] = useState(true)
+	const { data: session, status } = useSession()
 
 	useEffect(() => {
 		setLoading(true)
-		fetch('/api/latest/').then(d => d.json()).then(data => {
+		fetch('/api/latest/?type=weekly').then(d => d.json()).then(data => {
+			setWeekly(data.blogs)
+		}).catch(error => console.log(error))
+		fetch('/api/latest/?group=week').then(d => d.json()).then(data => {
 			setLoading(false)
-			setPosts(data.blogs)
+			setLatest(data.blogs || [])
 		}).catch(error => console.log(error))
 	}, [])
 
-	const loadMore = () => {
-		if (!loading) {
-			setLoading(true);
-			fetch(`/api/latest?page=${page + 1}`)
-				.then((response) => response.json())
-				.then((data) => {
-					const newPosts = data.blogs;
-					if (data.blogs.length == 0) setMore(false)
-					setPosts((prevPosts) => [...prevPosts, ...newPosts]);
-					setPage((prevPage) => prevPage + 1);
-					setLoading(false);
-				})
-				.catch((error) => {
-					console.log(error);
-					setLoading(false);
-				});
-		}
-	}
-
 	const truncate = (text, maxLength) => {
 		if (!text) return "";
-		if (text.length <= maxLength) return text;
-
 		text = text.replace(/<[^>]+>/g, '')
-
 		let truncatedText = text.substr(0, maxLength);
 		const lastSpaceIndex = truncatedText.lastIndexOf(" ");
-
 		if (lastSpaceIndex !== -1) {
 			truncatedText = truncatedText.substr(0, lastSpaceIndex);
 		}
-
-		return truncatedText+'...'
+		if (truncatedText.length <= maxLength) return truncatedText;
+		return truncatedText + '...'
 	}
 
 	return (
 		<div className="container">
 			<Head>
-				<title>Recent Blogs - My Blog Site</title>
+				<title>Home - My Blog Site</title>
 			</Head>
-			<h2 className='my-4'>Recent Blogs</h2>
+
 			<div className="row">
-				{posts.map(post => (
+				<div className="col-md-8 mx-auto text-center">
+					<h1 className='my-4'>Welcome to our Tech Blog</h1>
+					<TypeAnimation
+						sequence={[
+							'Discover the latest in technology',
+							2000,
+							'Discover the latest in programming',
+							2000,
+							'Discover the latest in industry trends',
+							2000,
+						]}
+						wrapper="span"
+						cursor={true}
+						repeat={Infinity}
+						style={{ fontSize: '2em', display: 'inline-block' }}
+						speed={65}
+						deletionSpeed={65}
+					/>
+					<hr />
+					<p>
+						Lorem ipsum dolor sit amet, consectetur adipiscing elit. Sed quis feugiat dolor. Proin eu condimentum
+						purus. Fusce lacinia eros sed turpis lobortis viverra. Donec et odio justo. Ut ultrices fermentum urna,
+						sed efficitur lorem pellentesque id. Nam hendrerit felis sed lectus tempus, ut vestibulum ex lacinia.
+					</p>
+					<p>
+						Fusce dapibus velit non libero eleifend, ut molestie turpis rhoncus. Cras nec purus quis purus auctor
+						fermentum. Mauris tempus ipsum sit amet tellus elementum tempus. Curabitur dapibus nulla ut fringilla
+						hendrerit. Vivamus scelerisque, erat non tincidunt vestibulum, urna enim varius neque, a ultrices ex ante
+						ac lacus. Aliquam erat volutpat. Pellentesque id semper ex, sit amet cursus nulla. Ut cursus tortor ac
+						nunc fermentum, eget vestibulum justo pulvinar. Donec non commodo leo.
+					</p>
+					<Link href="/blog" className="btn btn-primary">Explore Our Blog</Link>
+				</div>
+			</div>
+
+			<h2 className='my-4'>Weekly Blogs</h2>
+			<div className="row">
+				{weekly.map((post) => (
 					<div key={post._id} className="col-md-6 col-sm-12 col-lg-4">
 						<Blog
 							title={post.title}
 							summary={truncate(post.content, 80)}
 							slug={post.slug}
 							image={post.image}
+							edit={session && session.user && session.user.type == "admin"}
+							tag={post.tags}
+							author={`${post.author.firstName} ${post.author.lastName}`}
+							verified={post.author.type == "admin"}
 						/>
 					</div>
 				))}
@@ -77,7 +101,29 @@ const Home = (props) => {
 					</div>
 				}
 			</div>
-			{more && <button className='btn btn-outline-primary mb-4' onClick={loadMore}>Load more</button>}
+			<h2 className='my-4'>Lastest Blogs - In a Week</h2>
+			<div className="row">
+				{latest.map(post => (
+					<div key={post._id} className="col-md-6 col-sm-12 col-lg-4">
+						<Blog
+							title={post.title}
+							summary={truncate(post.content, 80)}
+							slug={post.slug}
+							image={post.image}
+							edit={session && session.user && session.user.type == "admin"}
+							author={`${post.author.firstName} ${post.author.lastName}`}
+							verified={post.author.type == "admin"}
+						/>
+					</div>
+				))}
+				{
+					loading && <div className="mb-4">
+						<svg className="spinner" viewBox="0 0 50 50">
+							<circle className="path" cx="25" cy="25" r="20" fill="none" strokeWidth="5"></circle>
+						</svg>
+					</div>
+				}
+			</div>
 		</div>
 	)
 }
@@ -85,7 +131,7 @@ const Home = (props) => {
 export default Home
 
 export async function getStaticProps() {
-	const posts = [
+	const weekly = [
 		{
 			_id: 1,
 			title: 'Post 1',
@@ -110,6 +156,6 @@ export async function getStaticProps() {
 	]
 
 	return {
-		props: { posts },
+		props: { weekly: weekly, latest: [] },
 	}
 }

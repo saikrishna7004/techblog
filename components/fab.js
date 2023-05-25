@@ -1,4 +1,4 @@
-import { faDeleteLeft, faPencil, faPlus, faTrash } from "@fortawesome/free-solid-svg-icons";
+import { faPencil, faPlus, faTrash } from "@fortawesome/free-solid-svg-icons";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import Link from "next/link";
 import { useEffect, useRef, useState } from "react";
@@ -27,7 +27,7 @@ const FloatingActionButton = (props) => {
         <div>
             <div className={"inner-fabs " + (show ? 'show' : '')}>
                 <Link className="fab round" id="fab2" data-tooltip="Edit" href={props.link}><FontAwesomeIcon icon={faPencil} size='2xs' /></Link>
-                <div className="fab round" id="fab3" data-tooltip="Delete"><FontAwesomeIcon icon={faTrash} size='2xs' /></div>
+                <div className="fab round" id="fab3" data-tooltip="Delete" onClick={props.handleDelete}><FontAwesomeIcon icon={faTrash} size='2xs' /></div>
             </div>
             <div className="fab round" id="fab1" onClick={()=>setShow(!show)}><FontAwesomeIcon id="fabIcon" icon={faPlus} size='2xs' /></div>
         </div>

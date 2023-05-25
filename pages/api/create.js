@@ -1,6 +1,8 @@
 import connectMongo from '../../utils/connectMongo';
 import BlogPost from '../../models/blogpost';
 import slugify from 'slugify';
+import { getServerSession } from 'next-auth';
+import { authOptions } from './auth/[...nextauth]';
 
 async function connect() {
     await connectMongo();
@@ -9,6 +11,8 @@ async function connect() {
 connect();
 
 export default async function handler(req, res) {
+    const session = await getServerSession(req, res, authOptions)
+    if (!session) return res.status(401).json({ error: "Unauthorised user" })
     try {
         // console.log(req.body)
         const blog = await BlogPost.create({
@@ -40,7 +44,7 @@ export default async function handler(req, res) {
                 ...req.body, slug: slugify(req.body.title, {
                     remove: /[*+~.()'"!:@]/g,
                     lower: true
-                })+"-"+Math.random().toString(36).substring(2, 7)
+                }) + "-" + Math.random().toString(36).substring(2, 7)
             })
             return res.status(200).json({ ...blog._doc })
         }

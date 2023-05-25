@@ -42,10 +42,13 @@ const Navbar = () => {
                         {session && <li className="nav-item">
                             <NavLink className="nav-link" href="/api/auth/signout" onClick={(e)=>{
                                 e.preventDefault()
-                                signOut()
+                                signOut({redirect: false})
                             }}>Logout</NavLink>
                         </li>}
                     </ul>
+                    <div className='me-4'>
+                        {session?.user.firstName} {session?.user.lastName}
+                    </div>
                 </div>
             </div>
         </nav>

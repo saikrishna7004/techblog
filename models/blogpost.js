@@ -25,7 +25,13 @@ const blogpostSchema = new Schema({
         required: true,
     },
     upvotes: Number,
-    downvotes: Number
+    downvotes: Number,
+    type: {
+        type: String,
+        enum: ['regular', 'weekly', 'biweekly', 'monthly', 'special'],
+        default: 'regular'
+    },
+    tags: String
 }, {
     timestamps: true
 });

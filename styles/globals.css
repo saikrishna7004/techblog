@@ -122,7 +122,7 @@ a {
 		border: 1px solid white;
 	}
 
-	.fab {
+	.fab, .fab:hover {
 		background-color: #eee;
 		color: #111111;
 		box-shadow: 0px 3px 5px rgba(255, 255, 255, 0.2), 0px 3px 5px rgba(255, 255, 255, 0.2);
@@ -134,6 +134,19 @@ a {
 
 	.content, p, li, label {
 		color: #eee;
+	}
+
+	.mylink, .mylink:hover {
+		color: white;
+	}
+
+	.form-select,
+	.form-select:focus {
+		color: #fff !important;
+		background-color: #222 !important;
+		border-color: #222 !important;
+		box-shadow: none;
+		background-image: url("data:image/svg+xml,%3csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 16 16'%3e%3cpath fill='none' stroke='%23cccccc' stroke-linecap='round' stroke-linejoin='round' stroke-width='2' d='m2 5 6 6 6-6'/%3e%3c/svg%3e");
 	}
 }
 
@@ -182,7 +195,7 @@ a {
 		border: 1px solid black;
 	}
 
-	.fab {
+	.fab, .fab:hover {
 		background-color: #111;
 		color: #eee;
 		box-shadow: 0px 3px 10px rgba(0, 0, 0, 0.16), 0px 3px 10px rgba(0, 0, 0, 0.16);
@@ -194,6 +207,18 @@ a {
 
 	.content, p, li, label {
 		color: #212135;
+	}
+
+	.mylink, .mylink:hover {
+		color: black;
+	}
+
+	.form-select,
+	.form-select:focus {
+		color: initial;
+		background-color: initial;
+		border-color: initial;
+		box-shadow: none;
 	}
 }
 
@@ -412,7 +437,7 @@ a {
     z-index: 2;
 }
 
-.form-signin input[type="email"] {
+.form-signin input[type="text"] {
     margin-bottom: -1px;
     border-bottom-right-radius: 0;
     border-bottom-left-radius: 0;
@@ -423,4 +448,18 @@ a {
     border-top-left-radius: 0;
     border-top-right-radius: 0;
 }
+
+.form-floating label {
+	font-size: initial;
+	line-height: normal;
+}
 /* Login page ends */
+
+.breadcrumb-item a {
+	color: unset;
+}
+
+.breadcrumb-item a:hover {
+	color: unset;
+	text-decoration: underline;
+}

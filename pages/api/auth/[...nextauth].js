@@ -1,7 +1,7 @@
 import NextAuth from "next-auth/next"
 import CredentialsProvider from "next-auth/providers/credentials"
 
-export default NextAuth({
+const authOptions = {
     providers: [
         CredentialsProvider({
             name: 'Credentials',
@@ -30,26 +30,35 @@ export default NextAuth({
     jwt: {
         secret: process.env.JWT_SECRET,
     },
+    secret: process.env.JWT_SECRET,
     callbacks: {
         async jwt({token, user}) {
             if (user) {
-                console.log("user", user)
-                token.id = user.id
+                // console.log("user", user)
+                token._id = user._id
                 token.firstName = user.firstName
                 token.lastName = user.lastName
                 token.email = user.email
                 token.username = user.username
+                token.type = user.type
             }
             return token
         },
         async session({session, token}) {
-            console.log("token", token)
-            session.user.id = token.id
+            // console.log("token", token)
+            session.user._id = token._id
             session.user.firstName = token.firstName
             session.user.lastName = token.lastName
             session.user.email = token.email
             session.user.username = token.username
+            session.user.type = token.type
             return session
         }
     }
+}
+
+export default NextAuth({
+    ...authOptions
 })
+
+export { authOptions }

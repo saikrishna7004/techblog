@@ -1,0 +1,44 @@
+.typingAnimation {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    height: 100px;
+    /* Adjust height as needed */
+}
+
+.textWrapper {
+    position: relative;
+    overflow: hidden;
+    height: 1em;
+}
+
+.text {
+    display: inline-block;
+    animation: typing 3s infinite;
+}
+
+@keyframes typing {
+    from {
+        width: 0;
+    }
+
+    to {
+        width: 100%;
+    }
+}
+
+.blinkingCursor {
+    position: absolute;
+    top: 0;
+    right: 0;
+    width: 8px;
+    height: 100%;
+    background-color: #000;
+    animation: blink 0.8s infinite;
+}
+
+@keyframes blink {
+    50% {
+        background-color: transparent;
+    }
+}

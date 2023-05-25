@@ -7,8 +7,9 @@ import { faAngleLeft } from '@fortawesome/free-solid-svg-icons'
 import FloatingActionButton from '../../components/fab'
 import { getSession, useSession } from 'next-auth/react'
 import Head from 'next/head'
+import Swal from 'sweetalert2'
 
-const BlogPost = ({login}) => {
+const BlogPost = ({ login }) => {
     const router = useRouter()
     const slug = router.query.slug
 
@@ -20,7 +21,7 @@ const BlogPost = ({login}) => {
     useEffect(() => {
         console.log(session?.user)
     }, [])
-    
+
 
     if (router.isFallback) {
         return <div>Loading...</div>;
@@ -55,6 +56,52 @@ const BlogPost = ({login}) => {
         })
     }, [slug])
 
+    const handleDelete = () => {
+        const swalWithBootstrapButtons = Swal.mixin({
+            customClass: {
+                confirmButton: 'btn btn-success mx-2',
+                cancelButton: 'btn btn-danger mx-2'
+            },
+            buttonsStyling: false
+        })
+
+        swalWithBootstrapButtons.fire({
+            title: 'Are you sure?',
+            text: "You won't be able to revert this!",
+            icon: 'warning',
+            showCancelButton: true,
+            confirmButtonText: 'Yes, delete it!',
+            cancelButtonText: 'No, cancel!',
+            reverseButtons: true
+        }).then((result) => {
+            if (result.isConfirmed) {
+                fetch('/api/delete', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json'
+                    },
+                    body: JSON.stringify({ id: blog._id })
+                })
+                    .then((response) => {
+                        if (!response.ok) return Swal.fire('Error', 'An error occured, your blog isn\'t deleted!', 'error')
+                        return swalWithBootstrapButtons.fire(
+                            'Deleted!',
+                            'Your file has been deleted.',
+                            'success'
+                        ).then(()=>router.push('/blog'))
+                    })
+                    .catch((error) => console.error('Error deleting blogs', error));
+
+            } else if (result.dismiss === Swal.DismissReason.cancel) {
+                swalWithBootstrapButtons.fire(
+                    'Cancelled',
+                    'Your blog is not deleted',
+                    'error'
+                )
+            }
+        })
+    }
+
     return (
         <main className='mx-auto' style={{ maxWidth: '900px' }}>
             <Head>
@@ -72,18 +119,21 @@ const BlogPost = ({login}) => {
                                         <li className="breadcrumb-item active" aria-current="page">{blog.title}</li>
                                     </ol>
                                 </nav>
-                                <Link href="/" className='d-flex align-items-center my-4 d-sm-none'><FontAwesomeIcon icon={faAngleLeft} size='2xs'/>&nbsp;&nbsp;Blogs</Link>
+                                <Link href="/" className='d-flex align-items-center my-4 d-sm-none'><FontAwesomeIcon icon={faAngleLeft} size='2xs' />&nbsp;&nbsp;Blogs</Link>
                                 <h1 className="mb-3">{blog.title}</h1>
                                 <p className="text-muted fs-6">{new Date(blog.createdAt).toLocaleString("en-US", options)}</p>
-                                <div className="d-flex align-items-center">
-                                    <img src="/person.jpg" alt="Author" width={30} height={30} className="rounded-circle my-3" />
-                                    <div className="mx-2">
-                                        <p className="mb-0" style={{ fontSize: '18px' }}>{author.firstName} {author.lastName}</p>
+                                <Link className='mylink' href={'/author/' + author.username}>
+                                    <div className="d-flex align-items-center">
+                                        <img src={author.image} alt="Author" width={30} height={30} className="rounded-circle my-3" />
+                                        <div className="mx-2 d-flex align-items-center">
+                                            <p className="mb-0 me-1" style={{ fontSize: '18px' }}>{author.firstName} {author.lastName}</p>
+                                            {(author.type == "admin") && <img className='my-1' style={{ pointerEvents: "none", userSelect: "none" }} src={'/verified.svg'} height='20px' width='20px' />}
+                                        </div>
                                     </div>
-                                </div>
+                                </Link>
                             </div>
                             <div className="text-center px-sm-4" style={{ overflowX: 'auto' }}>
-                                <img className="mt-3 mb-4 w-100" style={{ display: 'block', margin: '0 auto' }} src={blog.image} alt={blog.title} />
+                                <img className="mt-3 mb-4 w-100" style={{ display: 'block', margin: '0 auto' }} src={"https://images.weserv.nl/?url=" + blog.image} alt={blog.title} crossOrigin='anonymous' />
                             </div>
                         </div>
                         <div className='content px-4' dangerouslySetInnerHTML={{ __html: blog.content }} />
@@ -97,7 +147,7 @@ const BlogPost = ({login}) => {
                     </div>)
                 }
             </div>
-            {login && <FloatingActionButton link={router.asPath+'/edit'} />}
+            {login && session && (session.user._id == author._id) && <FloatingActionButton link={router.asPath + '/edit'} handleDelete={handleDelete} />}
         </main>
     )
 }

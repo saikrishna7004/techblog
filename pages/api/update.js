@@ -1,5 +1,7 @@
 import connectMongo from '../../utils/connectMongo';
 import BlogPost from '../../models/blogpost';
+import { authOptions } from './auth/[...nextauth]';
+import { getServerSession } from 'next-auth';
 
 async function connect() {
     await connectMongo();
@@ -8,6 +10,8 @@ async function connect() {
 connect();
 
 export default async function handler(req, res) {
+    const session = await getServerSession(req, res, authOptions)
+    if (!session) return res.status(401).json({ error: "Unauthorised user" })
     try {
         const blog = await BlogPost.findOne({ slug: req.body.slug });
         if (!blog) {
