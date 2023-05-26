@@ -221,7 +221,7 @@ const BlogPost = ({ login, allowed }) => {
                         <Shimmer width={200} height={200} duration={1500} />
                         <Shimmer width={450} height={20} duration={1500} />
                     </>) : <div>
-                        Blog doesn't exist
+                        Blog doesn&apos;t exist
                     </div>)) : <div>
                         Not allowed
                     </div>
