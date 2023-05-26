@@ -8,16 +8,12 @@ function Write({ login }) {
 
     const { data: session, status } = useSession()
 
-    if (!login) return <div className='container my-4'>
-        <h4>Want to contribute?</h4>
-        <p>Reach out to us at our mail to get your credentials and start contributing the blogs.</p>
-    </div>
-
     const [blog, setBlog] = useState({ title: "", image: "", content: "", author: session?.user?._id, type: "regular", tags: "" })
     const [isValid, setIsValid] = useState({ title: true, image: true })
     const [authors, setAuthors] = useState([])
 
     useEffect(() => {
+        if(login)
         fetch('/api/authors')
             .then((response) => response.json())
             .then((data) => setAuthors(data.users))
@@ -106,6 +102,11 @@ function Write({ login }) {
         if (e.target.value.trim() == '') setIsValid({ ...isValid, [e.target.name]: false }); else setIsValid({ ...isValid, [e.target.name]: true })
         setBlog({ ...blog, [e.target.name]: e.target.value })
     }
+
+    if (!login) return <div className='container my-4'>
+        <h4>Want to contribute?</h4>
+        <p>Reach out to us at our mail to get your credentials and start contributing the blogs.</p>
+    </div>
 
     return (
         <>
