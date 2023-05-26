@@ -37,10 +37,6 @@ const BlogPost = ({ login, allowed }) => {
         };
     }, [hasChanges]);
 
-    if (router.isFallback) {
-        return <div>Loading...</div>;
-    }
-
     const options = {
         timeZone: "Asia/Kolkata",
         hour12: true,
