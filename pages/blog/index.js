@@ -2,6 +2,8 @@ import Head from 'next/head'
 import Blog from '../../components/blogcard'
 import { useEffect, useState } from 'react'
 import { useSession } from 'next-auth/react'
+import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
+import { faClose, faFilter } from '@fortawesome/free-solid-svg-icons'
 
 const BlogHome = () => {
 
@@ -9,7 +11,10 @@ const BlogHome = () => {
 	const [page, setPage] = useState(1)
 	const [loading, setLoading] = useState(false)
 	const [more, setMore] = useState(true)
+	const [authors, setAuthors] = useState([])
 	const { data: session, status } = useSession()
+	const [filterMenu, setFilterMenu] = useState(false);
+	const [filter, setFilter] = useState({ type: { regular: false, weekly: false, monthly: false } })
 
 	useEffect(() => {
 		setLoading(true)
@@ -19,6 +24,13 @@ const BlogHome = () => {
 			console.log(data.blogs)
 		}).catch(error => console.log(error))
 	}, [])
+
+	useEffect(() => {
+		fetch('/api/authors')
+			.then((response) => response.json())
+			.then((data) => setAuthors(data.users))
+			.catch((error) => console.error('Error fetching authors:', error));
+	}, []);
 
 	const loadMore = () => {
 		if (!loading) {
@@ -55,14 +67,85 @@ const BlogHome = () => {
 		return truncatedText + '...'
 	}
 
+	const handleFilterChange = (event) => {
+		const { name, checked } = event.target;
+		if (name == 'weekly' || name == 'monthly' || name == 'regular') {
+			setFilter({ ...filter, type: { ...filter.type, [name]: checked } })
+		}
+	};
+
+	const handleFilterButtonClick = () => {
+		if (!loading) {
+			setLoading(true)
+			const temp = { ...filter, filter: true }
+			let type = ""
+			try {
+				for (const key in temp.type) {
+					if (Object.hasOwnProperty.call(temp.type, key)) {
+						if (temp.type[key]) {
+							type += (key + ',')
+						}
+					}
+				}
+				if (type.endsWith(',')) { type = type.slice(0, -1) }
+				console.log(type)
+				temp.type = type
+				const queryParams = new URLSearchParams(temp)
+				fetch(`/api/latest/?${queryParams.toString()}`).then(d => d.json()).then(data => {
+					setLoading(false)
+					setPosts(data.blogs)
+					console.log(data.blogs)
+				}).catch(error => console.log(error))
+			} catch (error) {
+				console.log(error)
+				setLoading(false)
+			}
+		}
+	};
+
 	return (
 		<div className="container">
 			<Head>
 				<title>Recent Blogs - My Blog Site</title>
 			</Head>
-			<h2 className='my-4'>Recent Blogs</h2>
+			<div className="row align-items-center justify-content-between">
+				<h2 className='my-4 col-auto'>Recent Blogs</h2>
+				<div className='col-auto'><button className='btn btn-outline-secondary' onClick={() => setFilterMenu(!filterMenu)}><FontAwesomeIcon icon={faFilter} /> Filter</button></div>
+			</div>
+			<div>
+				<div className={`filter-menu p-4 ${filterMenu ? 'active' : ''}`}>
+					<div>
+						<div className="mb-3">
+							<label htmlFor="type" className="form-label">Type</label>
+							<div className="form-check">
+								<input type="checkbox" className="form-check-input mt-2" id="regular" name="regular" checked={filter.type.regular} onChange={handleFilterChange} />
+								<label className="form-check-label" htmlFor="regular">Regular</label>
+							</div>
+							<div className="form-check">
+								<input type="checkbox" className="form-check-input mt-2" id="weekly" name="weekly" checked={filter.type.weekly} onChange={handleFilterChange} />
+								<label className="form-check-label" htmlFor="weekly">Weekly</label>
+							</div>
+							<div className="form-check">
+								<input type="checkbox" className="form-check-input mt-2" id="monthly" name="monthly" checked={filter.type.monthly} onChange={handleFilterChange} />
+								<label className="form-check-label" htmlFor="monthly">Monthly</label>
+							</div>
+						</div>
+						<div className="mb-3">
+							<label htmlFor="type" className="form-label">From date</label>
+							<input type="date" className="form-control" id="fromDate" name="fromDate" checked={filter.fromDate} onChange={handleFilterChange} />
+						</div>
+						<div className="mb-3">
+							<label htmlFor="type" className="form-label">To date</label>
+							<input type="date" className="form-control" id="toDate" name="toDate" checked={filter.toDate} onChange={handleFilterChange} />
+						</div>
+					</div>
+					<button className='btn position-absolute' style={{ color: 'white', top: '15px', right: '15px' }} onClick={() => setFilterMenu(!filterMenu)}><FontAwesomeIcon icon={faClose} /></button>
+					<button className='btn btn-secondary my-3' onClick={handleFilterButtonClick}>Filter</button>
+				</div>
+				<div className={`black-backdrop ${filterMenu ? 'active' : ''}`} />
+			</div>
 			<div className="row">
-				{posts.map(post => (
+				{posts?.map(post => (
 					<div key={post._id} className="col-md-6 col-sm-12 col-lg-4">
 						<Blog
 							title={post.title}

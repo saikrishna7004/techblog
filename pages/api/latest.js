@@ -14,13 +14,36 @@ export default async function handler(req, res) {
 		const limit = 6;
 		const skip = (page - 1) * limit;
 
-		if (req.query.group == 'week') {
+		if (req.query.filter) {
+			const { type, fromDate, toDate } = req.query;
+			const filters = {};
+			if (type) {
+				filters.type = { $in: type.split(',') };
+			}
+			if (fromDate && toDate) {
+				filters.createdAt = {
+					$gte: new Date(fromDate),
+					$lte: new Date(toDate),
+				};
+			} else if (fromDate) {
+				filters.createdAt = {
+					$gte: new Date(fromDate),
+				};
+			} else if (toDate) {
+				filters.createdAt = {
+					$lte: new Date(toDate),
+				};
+			}
+			const blogs = await BlogPost.find(filters).sort({ createdAt: -1 }).populate('author', 'firstName lastName username type').skip(skip).limit(limit)
+			return res.json({ blogs })
+		}
+		else if (req.query.group == 'week') {
 			const oneWeekAgo = new Date();
 			oneWeekAgo.setDate(oneWeekAgo.getDate() - 7);
-			const blogs = await BlogPost.find({ createdAt: { $gte: oneWeekAgo }, type: { $ne: "weekly" } }).populate('author', 'firstName lastName username type').sort({ createdAt: -1 }).skip(skip).limit(limit)
+			const blogs = await BlogPost.find({ createdAt: { $gte: oneWeekAgo }, type: { $ne: "weekly" } }).sort({ createdAt: -1 }).populate('author', 'firstName lastName username type').skip(skip).limit(limit)
 			return res.status(200).json({ blogs });
 		}
-		else if(type){
+		else if (type) {
 			const blogs = await BlogPost.find({ type }).sort({ createdAt: -1 }).populate('author', 'firstName lastName username type').skip(skip).limit(limit)
 			return res.status(200).json({ blogs });
 		}

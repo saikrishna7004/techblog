@@ -62,18 +62,12 @@ const Home = (props) => {
 					/>
 					<hr />
 					<p>
-						Lorem ipsum dolor sit amet, consectetur adipiscing elit. Sed quis feugiat dolor. Proin eu condimentum
-						purus. Fusce lacinia eros sed turpis lobortis viverra. Donec et odio justo. Ut ultrices fermentum urna,
-						sed efficitur lorem pellentesque id. Nam hendrerit felis sed lectus tempus, ut vestibulum ex lacinia.
+						Confused what, when and how to do in programming? Here is this amazing platform where you can get answers to all of your confusions.
 					</p>
 					<p>
-						Fusce dapibus velit non libero eleifend, ut molestie turpis rhoncus. Cras nec purus quis purus auctor
-						fermentum. Mauris tempus ipsum sit amet tellus elementum tempus. Curabitur dapibus nulla ut fringilla
-						hendrerit. Vivamus scelerisque, erat non tincidunt vestibulum, urna enim varius neque, a ultrices ex ante
-						ac lacus. Aliquam erat volutpat. Pellentesque id semper ex, sit amet cursus nulla. Ut cursus tortor ac
-						nunc fermentum, eget vestibulum justo pulvinar. Donec non commodo leo.
+						Explore our blogs starting from weekly, regular and monthly basis. Scroll down to see more.
 					</p>
-					<Link href="/blog" className="btn btn-primary">Explore Our Blog</Link>
+					<Link href="/blog" className="btn btn-primary my-4">Explore Our Blog</Link>
 				</div>
 			</div>
 
@@ -138,6 +132,11 @@ export async function getStaticProps() {
 			slug: 'post-1',
 			summary: 'This is a summary of Post 1',
 			image: 'https://picsum.photos/id/237/300/200',
+			author: {
+				firstName: "",
+				lastName: "",
+				username: ""
+			}
 		},
 		{
 			_id: 2,
@@ -145,6 +144,11 @@ export async function getStaticProps() {
 			slug: 'post-2',
 			summary: 'This is a summary of Post 2',
 			image: 'https://picsum.photos/id/238/300/200',
+			author: {
+				firstName: "",
+				lastName: "",
+				username: ""
+			}
 		},
 		{
 			_id: 3,
@@ -152,6 +156,11 @@ export async function getStaticProps() {
 			slug: 'post-3',
 			summary: 'This is a summary of Post 3',
 			image: 'https://picsum.photos/id/239/300/200',
+			author: {
+				firstName: "",
+				lastName: "",
+				username: ""
+			}
 		},
 	]
 

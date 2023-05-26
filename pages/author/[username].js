@@ -38,7 +38,7 @@ const AuthorDetailsPage = () => {
                             <div className="text-center mb-4">
                                 <img src={author.image} alt="Author" className="rounded-circle" width={150} height={150} />
                             </div>
-                            <h2 className="text-center">{`${author.firstName} ${author.lastName}`}</h2>
+                            <h2 className="d-flex align-items-center justify-content-center">{`${author.firstName} ${author.lastName}`} {author.type=='admin' && <img className='my-1 mx-1' style={{ pointerEvents: "none", userSelect: "none" }} src={'/verified.svg'} height='25px' width='25px' />}</h2>
                             <p className="text-center">{author.bio}</p>
                             <div className="text-center">
                                 <span className="badge bg-primary me-2">{author.type}</span>

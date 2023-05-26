@@ -110,7 +110,7 @@ function Write({ login }) {
     return (
         <>
             <Head>
-                <title>Write a Blog</title>
+                <title>Write a Blog - My Blog Site</title>
             </Head>
             <div className="container mt-4">
                 {(session && session.user) ? <div>

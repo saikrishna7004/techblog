@@ -122,7 +122,8 @@ a {
 		border: 1px solid white;
 	}
 
-	.fab, .fab:hover {
+	.fab,
+	.fab:hover {
 		background-color: #eee;
 		color: #111111;
 		box-shadow: 0px 3px 5px rgba(255, 255, 255, 0.2), 0px 3px 5px rgba(255, 255, 255, 0.2);
@@ -132,11 +133,15 @@ a {
 		color: #6cb6ff;
 	}
 
-	.content, p, li, label {
+	.content,
+	p,
+	li,
+	label {
 		color: #eee;
 	}
 
-	.mylink, .mylink:hover {
+	.mylink,
+	.mylink:hover {
 		color: white;
 	}
 
@@ -147,6 +152,9 @@ a {
 		border-color: #222 !important;
 		box-shadow: none;
 		background-image: url("data:image/svg+xml,%3csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 16 16'%3e%3cpath fill='none' stroke='%23cccccc' stroke-linecap='round' stroke-linejoin='round' stroke-width='2' d='m2 5 6 6 6-6'/%3e%3c/svg%3e");
+	}
+	.filter-menu {
+		background-color: rgba(0, 0, 0, 0.9);
 	}
 }
 
@@ -195,21 +203,26 @@ a {
 		border: 1px solid black;
 	}
 
-	.fab, .fab:hover {
+	.fab,
+	.fab:hover {
 		background-color: #111;
 		color: #eee;
 		box-shadow: 0px 3px 10px rgba(0, 0, 0, 0.16), 0px 3px 10px rgba(0, 0, 0, 0.16);
 	}
-	
+
 	a {
 		color: #0070cc;
 	}
 
-	.content, p, li, label {
+	.content,
+	p,
+	li,
+	label {
 		color: #212135;
 	}
 
-	.mylink, .mylink:hover {
+	.mylink,
+	.mylink:hover {
 		color: black;
 	}
 
@@ -219,6 +232,10 @@ a {
 		background-color: initial;
 		border-color: initial;
 		box-shadow: none;
+	}
+
+	.filter-menu {
+		background-color: rgba(255, 255, 255, 0.9);
 	}
 }
 
@@ -236,7 +253,10 @@ a {
 	transform: scale(1.02) translateZ(10px);
 }
 
-.content, p, li, label {
+.content,
+p,
+li,
+label {
 	font-size: 18px;
 	line-height: 36px;
 	font-family: -apple-system, system-ui, BlinkMacSystemFont, "Segoe UI", Helvetica, Arial, sans-serif, "Apple Color Emoji", "Segoe UI Emoji", "Segoe UI Symbol";
@@ -409,50 +429,51 @@ a {
 
 /* Login page */
 .bd-placeholder-img {
-    font-size: 1.125rem;
-    text-anchor: middle;
-    -webkit-user-select: none;
-    -moz-user-select: none;
-    user-select: none;
+	font-size: 1.125rem;
+	text-anchor: middle;
+	-webkit-user-select: none;
+	-moz-user-select: none;
+	user-select: none;
 }
 
 @media (min-width: 768px) {
-    .bd-placeholder-img-lg {
-        font-size: 3.5rem;
-    }
+	.bd-placeholder-img-lg {
+		font-size: 3.5rem;
+	}
 }
 
 .form-signin {
-    width: 100%;
-    max-width: 330px;
-    padding: 15px;
-    margin: auto;
+	width: 100%;
+	max-width: 330px;
+	padding: 15px;
+	margin: auto;
 }
 
 .form-signin .checkbox {
-    font-weight: 400;
+	font-weight: 400;
 }
 
 .form-signin .form-floating:focus-within {
-    z-index: 2;
+	z-index: 2;
 }
 
 .form-signin input[type="text"] {
-    margin-bottom: -1px;
-    border-bottom-right-radius: 0;
-    border-bottom-left-radius: 0;
+	margin-bottom: -1px;
+	border-bottom-right-radius: 0;
+	border-bottom-left-radius: 0;
 }
 
 .form-signin input[type="password"] {
-    margin-bottom: 10px;
-    border-top-left-radius: 0;
-    border-top-right-radius: 0;
+	margin-bottom: 10px;
+	border-top-left-radius: 0;
+	border-top-right-radius: 0;
 }
 
 .form-floating label {
 	font-size: initial;
 	line-height: normal;
 }
+
 /* Login page ends */
 
 .breadcrumb-item a {
@@ -463,3 +484,43 @@ a {
 	color: unset;
 	text-decoration: underline;
 }
+
+/* Filter */
+/* Styles for the filter menu */
+.filter-menu {
+	position: fixed;
+	top: 0;
+	right: -400px;
+	width: 400px;
+	height: 100%;
+	box-shadow: 0 0 10px rgba(0, 0, 0, 0.2);
+	transition: right 0.3s ease;
+	z-index: 999;
+	overflow-y: auto;
+	border-radius: 15px 0 0 15px;
+}
+
+.filter-menu.active {
+	right: 0;
+}
+
+.black-backdrop {
+	position: fixed;
+	top: 0;
+	left: 0;
+	width: 100%;
+	height: 100%;
+	background-color: rgba(0, 0, 0, 0.2);
+	visibility: hidden;
+	opacity: 0;
+	transition: opacity 0.3s ease, visibility 0s linear 0.3s;
+	z-index: 998;
+}
+
+.black-backdrop.active {
+	visibility: visible;
+	opacity: 1;
+	transition-delay: 0s;
+}
+
+/* Filter end */
