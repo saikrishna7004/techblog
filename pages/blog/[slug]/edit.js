@@ -15,14 +15,14 @@ const BlogPost = ({ login, allowed }) => {
     const slug = router.query.slug
     const { data: session, status } = useSession()
 
-    if (!login || !allowed) return <div className='container'>Not allowed</div>
-
     const [blog, setBlog] = useState({ title: "", image: "", content: "", author: "" })
     const [author, setAuthor] = useState({})
     const [loading, setLoading] = useState(true)
     const [hasChanges, setHasChanges] = useState(false);
 
     useEffect(() => {
+        if(!login) return
+
         const handleBeforeUnload = (e) => {
             if (hasChanges) {
                 e.preventDefault();
@@ -46,6 +46,8 @@ const BlogPost = ({ login, allowed }) => {
     };
 
     useEffect(() => {
+        if(!login) return
+        
         if (!slug) return
         setLoading(true)
         fetch('/api/blog/', {
@@ -69,6 +71,8 @@ const BlogPost = ({ login, allowed }) => {
             setLoading(false)
         })
     }, [slug])
+
+    if (!login || !allowed) return <div className='container'>Not allowed</div>
 
     const handleEditorChange = (content, editor) => {
         setBlog({ ...blog, content })
