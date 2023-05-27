@@ -13,7 +13,7 @@ const BlogHome = () => {
 	const [more, setMore] = useState(true)
 	const { data: session, status } = useSession()
 	const [filterMenu, setFilterMenu] = useState(false);
-	const [filter, setFilter] = useState({ type: { regular: false, weekly: false, monthly: false }, fromDate: new Date(), toDate: new Date() })
+	const [filter, setFilter] = useState({ type: { regular: false, weekly: false, monthly: false }, fromDate: '', toDate: '' })
 
 	useEffect(() => {
 		setLoading(true)
@@ -148,7 +148,8 @@ const BlogHome = () => {
 						</div>
 					</div>
 					<button className='btn position-absolute' style={{ color: 'white', top: '15px', right: '15px' }} onClick={() => setFilterMenu(!filterMenu)}><FontAwesomeIcon icon={faClose} /></button>
-					<button className='btn btn-secondary my-3' onClick={handleFilterButtonClick}>Filter</button>
+					<button className='btn btn-secondary my-3 me-3' onClick={handleFilterButtonClick}>Filter</button>
+					<button className='btn btn-secondary my-3' onClick={()=>setFilter({ type: { regular: false, weekly: false, monthly: false }, fromDate: '', toDate: '' })}>Clear</button>
 				</div>
 				<div className={`black-backdrop ${filterMenu ? 'active' : ''}`} />
 			</div>
