@@ -11,10 +11,9 @@ const BlogHome = () => {
 	const [page, setPage] = useState(1)
 	const [loading, setLoading] = useState(false)
 	const [more, setMore] = useState(true)
-	const [authors, setAuthors] = useState([])
 	const { data: session, status } = useSession()
 	const [filterMenu, setFilterMenu] = useState(false);
-	const [filter, setFilter] = useState({ type: { regular: false, weekly: false, monthly: false } })
+	const [filter, setFilter] = useState({ type: { regular: false, weekly: false, monthly: false }, fromDate: new Date(), toDate: new Date() })
 
 	useEffect(() => {
 		setLoading(true)
@@ -25,17 +24,23 @@ const BlogHome = () => {
 		}).catch(error => console.log(error))
 	}, [])
 
-	useEffect(() => {
-		fetch('/api/authors')
-			.then((response) => response.json())
-			.then((data) => setAuthors(data.users))
-			.catch((error) => console.error('Error fetching authors:', error));
-	}, []);
-
-	const loadMore = () => {
+	const loadMore = (filters) => {
 		if (!loading) {
 			setLoading(true);
-			fetch(`/api/latest?page=${page + 1}`)
+			const temp = { ...filter, filter: true }
+			let type = ""
+			for (const key in temp.type) {
+				if (Object.hasOwnProperty.call(temp.type, key)) {
+					if (temp.type[key]) {
+						type += (key + ',')
+					}
+				}
+			}
+			if (type.endsWith(',')) { type = type.slice(0, -1) }
+			console.log(type)
+			temp.type = type
+			const queryParams = new URLSearchParams(temp)
+			fetch(`/api/latest?page=${page + 1}&${queryParams}`)
 				.then((response) => response.json())
 				.then((data) => {
 					const newPosts = data.blogs;
@@ -68,9 +73,12 @@ const BlogHome = () => {
 	}
 
 	const handleFilterChange = (event) => {
-		const { name, checked } = event.target;
+		const { name, checked, value } = event.target;
 		if (name == 'weekly' || name == 'monthly' || name == 'regular') {
 			setFilter({ ...filter, type: { ...filter.type, [name]: checked } })
+		}
+		else if (name == 'fromDate' || name=="toDate"){
+			setFilter({...filter, [name]: value})
 		}
 	};
 
@@ -132,11 +140,11 @@ const BlogHome = () => {
 						</div>
 						<div className="mb-3">
 							<label htmlFor="type" className="form-label">From date</label>
-							<input type="date" className="form-control" id="fromDate" name="fromDate" checked={filter.fromDate} onChange={handleFilterChange} />
+							<input type="date" className="form-control" id="fromDate" name="fromDate" value={filter.fromDate} onChange={handleFilterChange} />
 						</div>
 						<div className="mb-3">
 							<label htmlFor="type" className="form-label">To date</label>
-							<input type="date" className="form-control" id="toDate" name="toDate" checked={filter.toDate} onChange={handleFilterChange} />
+							<input type="date" className="form-control" id="toDate" name="toDate" value={filter.toDate} onChange={handleFilterChange} />
 						</div>
 					</div>
 					<button className='btn position-absolute' style={{ color: 'white', top: '15px', right: '15px' }} onClick={() => setFilterMenu(!filterMenu)}><FontAwesomeIcon icon={faClose} /></button>
