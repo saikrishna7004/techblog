@@ -164,6 +164,18 @@ a {
 	.search-btn {
 		color: #fff;
 	}
+
+	.autocomplete-suggestions {
+		background: #111;
+	}
+
+	.autocomplete-suggestions a{
+		color: white;
+	}
+
+	.autocomplete-suggestion:hover {
+		background: #333;
+	}
 }
 
 @media (prefers-color-scheme: light) {
@@ -251,6 +263,18 @@ a {
 
 	.search-btn {
 		color: #000;
+	}
+
+	.autocomplete-suggestions {
+		background: #eee;
+	}
+
+	.autocomplete-suggestions a{
+		color: black;
+	}
+
+	.autocomplete-suggestion:hover {
+		background: #ccc;
 	}
 }
 
@@ -552,4 +576,47 @@ label {
 
 .search-btn {
 	border-radius: 0;
+	background-color: white;
+	color: #000;
+	height: 36px;
+}
+
+.search-btn:hover {
+	background-color: #ccc;
+	color: #000;
+}
+
+.search-input {
+	border-radius: 0;
+	padding: 0px 10px;
+	font-size: 14px;
+	height: 36px;
+	margin-top: auto;
+	margin-bottom: auto;
+}
+
+.search-btn {
+	border-radius: 0;
+}
+
+.autocomplete-suggestions {
+	list-style: none;
+	padding: 0;
+	margin: 0;
+	position: absolute;
+	max-height: 200px;
+	overflow-y: auto;
+	width: 300px;
+	z-index: 10;
+	top: 45px;
+	right: 20px;
+}
+
+.autocomplete-suggestion {
+	padding: 8px 10px;
+	cursor: pointer;
+}
+
+.autocomplete-suggestion:last-child {
+	border-bottom: none;
 }

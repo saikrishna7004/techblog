@@ -17,9 +17,35 @@ const Navbar = () => {
     const router = useRouter()
     const { data: session, status } = useSession()
     const [searchText, setSearchText] = useState('')
-    const handleSearch = (e)=>{
+    const handleSearch = (e) => {
         e.preventDefault()
         router.push(`/blog/search?q=${searchText}`)
+    }
+    const [autocompleteResults, setAutocompleteResults] = useState([]);
+    const [showSuggestions, setShowSuggestions] = useState(false);
+
+    const handleSearchTermChange = (event) => {
+        const { value } = event.target;
+        setSearchText(value);
+        if (!value || value == '') {
+            setAutocompleteResults([])
+            setShowSuggestions(false)
+            return
+        }
+        fetch(`/api/autocomplete?term=${value}`)
+            .then((response) => response.json())
+            .then((data) => {
+                setAutocompleteResults(data);
+                setShowSuggestions(data.length > 0);
+            })
+            .catch((error) => console.error('Error fetching autocomplete results:', error));
+    };
+
+    const handleSuggession = () => { 
+        router.push(`/blog/${result.slug}`)
+        setSearchText('')
+        setShowSuggestions(false)
+        setAutocompleteResults([]) 
     }
 
     return (
@@ -62,10 +88,19 @@ const Navbar = () => {
             </nav>
             <nav className="navbar navbar-expand py-3 sticky-top" style={{ background: "var(--navbar-bg-2)", height: '50px' }}>
                 <div className="container-fluid">
-                    <Link className='ms-4' href='/'><FontAwesomeIcon icon={faHome} style={{color: 'var(--navbar-text)'}} /></Link>
+                    <Link className='ms-4' href='/'><FontAwesomeIcon icon={faHome} style={{ color: 'var(--navbar-text)' }} /></Link>
                     <form className="d-flex me-2" onSubmit={handleSearch}>
-                        <input className="form-control search-input" type="search" value={searchText} onChange={e=>setSearchText(e.target.value)} placeholder="Search" aria-label="Search" />
+                        <input className="form-control search-input" type="search" value={searchText} onChange={handleSearchTermChange} placeholder="Search" aria-label="Search" />
                         <button className="btn search-btn" type='submit'><FontAwesomeIcon icon={faSearch} className="search-icon" /></button>
+                        {showSuggestions && (
+                            <ul className="autocomplete-suggestions">
+                                {autocompleteResults.map((result) => (
+                                    <li className="autocomplete-suggestion" key={result._id} onClick={handleSuggession}>
+                                        {result.title}
+                                    </li>
+                                ))}
+                            </ul>
+                        )}
                     </form>
                 </div>
             </nav>
