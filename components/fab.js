@@ -11,7 +11,6 @@ const FloatingActionButton = (props) => {
     }, []);
 
     const handleClickOutside = (event) => {
-        setShow(!show)
         if (
             !event.target.closest('#fab1') &&
             !event.target.closest('#fab2') &&

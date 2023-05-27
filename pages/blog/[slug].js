@@ -8,6 +8,7 @@ import FloatingActionButton from '../../components/fab'
 import { getSession, useSession } from 'next-auth/react'
 import Head from 'next/head'
 import Swal from 'sweetalert2'
+import ShareButtons from '../../components/share'
 
 const BlogPost = ({ login }) => {
     const router = useRouter()
@@ -126,18 +127,19 @@ const BlogPost = ({ login }) => {
                                         </div>
                                     </div>
                                 </Link>
+                                <ShareButtons className='mt-2 mb-3' />
                             </div>
                             <div className="text-center px-sm-4" style={{ overflowX: 'auto' }}>
                                 <img className="mt-3 mb-4 w-100" style={{ display: 'block', margin: '0 auto' }} src={"https://images.weserv.nl/?url=" + blog.image} alt={blog.title} crossOrigin='anonymous' />
                             </div>
                         </div>
                         <div className='content px-4' dangerouslySetInnerHTML={{ __html: blog.content }} />
-                    </> : (loading ? (<>
+                    </> : (loading ? (<div className='container' style={{scale: '1/2', overflowX: 'hidden'}}>
                         <Shimmer width={500} height={20} duration={1500} />
                         <Shimmer width={400} height={20} duration={1500} />
                         <Shimmer width={200} height={200} duration={1500} />
                         <Shimmer width={450} height={20} duration={1500} />
-                    </>) : <div>
+                    </div>) : <div>
                         Blog doesn&apos;t exist
                     </div>)
                 }

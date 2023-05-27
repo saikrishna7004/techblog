@@ -9,7 +9,7 @@ const Home = (props) => {
 
 	const [weekly, setWeekly] = useState([...props.weekly])
 	const [latest, setLatest] = useState([...props.latest])
-	const [loading, setLoading] = useState(false)
+	const [loading, setLoading] = useState(true)
 	const { data: session, status } = useSession()
 
 	useEffect(() => {
@@ -46,17 +46,17 @@ const Home = (props) => {
 					<h1 className='my-4'>Welcome to our Tech Blog</h1>
 					<TypeAnimation
 						sequence={[
-							'Discover the latest in technology',
+							'Discover the latest in the programming',
 							2000,
-							'Discover the latest in programming',
+							'Discover the latest in the technologies',
 							2000,
-							'Discover the latest in industry trends',
+							'Discover the latest in the industry trends',
 							2000,
 						]}
 						wrapper="span"
 						cursor={true}
 						repeat={Infinity}
-						style={{ fontSize: '2em', display: 'inline-block' }}
+						style={{ fontSize: '1.8em', display: 'inline-block' }}
 						speed={65}
 						deletionSpeed={65}
 					/>

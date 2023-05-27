@@ -49,7 +49,7 @@ export default function BlogCard({ title, summary, slug, image, edit, tag, autho
 
     return (
         <div className='position-relative'>
-            {tag && <span className="position-absolute top-0 translate-middle badge rounded-pill bg-danger" style={{zIndex: 100, right: -30}}>
+            {tag && <span className="position-absolute top-0 translate-middle badge rounded-pill bg-danger" style={{ zIndex: 100, right: -30 }}>
                 {tag}
             </span>}
             <div href={`/blog/${slug}`} className="blog-card" style={{ borderRadius: '5px' }}>
@@ -61,6 +61,13 @@ export default function BlogCard({ title, summary, slug, image, edit, tag, autho
                         <h5 className="card-title">{title}</h5>
                         <p className="fs-6 align-items-center d-flex">By {author} {verified && <img className='my-1 mx-1' style={{ pointerEvents: "none", userSelect: "none" }} src={'/verified.svg'} height='20px' width='20px' />}</p>
                         <p className="card-text">{summary}</p>
+                        {tag && (
+                            <div className="badge-group mb-4">
+                                {tag.split(',').map((tag, index) => (
+                                    <span key={index} className="badge rounded-pill bg-danger">{tag.trim()}</span>
+                                ))}
+                            </div>
+                        )}
                         <div className="row align-items-center mx-1">
                             <Link href={`/blog/${slug}`} className="btn btn-primary col-auto">Read More</Link>
                             {edit && <Link href={`/blog/${slug}/edit`} className="col-auto ms-auto"><FontAwesomeIcon icon={faPencil} size="1x" /></Link>}

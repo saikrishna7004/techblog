@@ -4,9 +4,12 @@ import { useEffect, useState } from 'react'
 import { useSession } from 'next-auth/react'
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 import { faClose, faFilter } from '@fortawesome/free-solid-svg-icons'
+import { useRouter } from 'next/router'
 
 const BlogHome = () => {
 
+    const router = useRouter();
+    const { q } = router.query;
 	const [posts, setPosts] = useState([])
 	const [page, setPage] = useState(1)
 	const [loading, setLoading] = useState(true)
@@ -17,13 +20,13 @@ const BlogHome = () => {
 
 	useEffect(() => {
 		setLoading(true)
-		fetch('/api/latest/').then(d => d.json()).then(data => {
+		fetch('/api/latest/?q='+q).then(d => d.json()).then(data => {
 			setLoading(false)
 			setPosts(data.blogs)
             setMore(data.blogs.length!=0)
 			console.log(data.blogs)
 		}).catch(error => console.log(error))
-	}, [])
+	}, [q])
 
 	const loadMore = (filters) => {
 		if (!loading) {
@@ -41,7 +44,7 @@ const BlogHome = () => {
 			console.log(type)
 			temp.type = type
 			const queryParams = new URLSearchParams(temp)
-			fetch(`/api/latest?page=${page + 1}&${queryParams}`)
+			fetch(`/api/latest?q=${q}&page=${page + 1}&${queryParams}`)
 				.then((response) => response.json())
 				.then((data) => {
 					const newPosts = data.blogs;
@@ -101,7 +104,7 @@ const BlogHome = () => {
 				console.log(type)
 				temp.type = type
 				const queryParams = new URLSearchParams(temp)
-				fetch(`/api/latest/?${queryParams.toString()}`).then(d => d.json()).then(data => {
+				fetch(`/api/latest/?q=${q}&${queryParams.toString()}`).then(d => d.json()).then(data => {
 					setLoading(false)
 					setPosts(data.blogs)
 					console.log(data.blogs)
@@ -116,10 +119,10 @@ const BlogHome = () => {
 	return (
 		<div className="container">
 			<Head>
-				<title>Recent Blogs - My Blog Site</title>
+				<title>Search Results - My Blog Site</title>
 			</Head>
 			<div className="row align-items-center justify-content-between">
-				<h2 className='my-4 col-auto'>Recent Blogs</h2>
+				<h2 className='my-4 col-auto'>Search Results for query: {q}</h2>
 				<div className='col-auto'><button className='btn btn-outline-secondary' onClick={() => setFilterMenu(!filterMenu)}><FontAwesomeIcon icon={faFilter} /> Filter</button></div>
 			</div>
 			<div style={{zIndex: '1100 !important'}}>
@@ -169,6 +172,7 @@ const BlogHome = () => {
 						/>
 					</div>
 				))}
+                {!loading && (posts.length==0) && <div className='container'>No posts to show</div>}
 				{
 					loading && <div className="mb-4">
 						<svg className="spinner" viewBox="0 0 50 50">

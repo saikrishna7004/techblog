@@ -79,6 +79,8 @@ a {
 		--bs-navbar-toggler-border-color: rgba(255, 255, 255, 0.1);
 		--bs-navbar-toggler-icon-bg: url("data:image/svg+xml,%3csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 30 30'%3e%3cpath stroke='rgba%28255, 255, 255, 0.55%29' stroke-linecap='round' stroke-miterlimit='10' stroke-width='2' d='M4 7h22M4 15h22M4 23h22'/%3e%3c/svg%3e");
 		--navbar-bg: linear-gradient(to right, #111111 0%, #151515 50%, #111111 100%);
+		--navbar-bg-2: #090909dd;
+		--navbar-text: white;
 	}
 
 	.shimmer {
@@ -153,14 +155,22 @@ a {
 		box-shadow: none;
 		background-image: url("data:image/svg+xml,%3csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 16 16'%3e%3cpath fill='none' stroke='%23cccccc' stroke-linecap='round' stroke-linejoin='round' stroke-width='2' d='m2 5 6 6 6-6'/%3e%3c/svg%3e");
 	}
+
 	.filter-menu {
 		background-color: rgba(0, 0, 0, 0.9);
+		--close-btn-color: white;
+	}
+
+	.search-btn {
+		color: #fff;
 	}
 }
 
 @media (prefers-color-scheme: light) {
 	.navbar {
 		--navbar-bg: linear-gradient(to right, #eeeeee 0%, #eaeaea 50%, #eeeeee 100%);
+		--navbar-bg-2: #edededdd;
+		--navbar-text: black;
 	}
 
 	.card {
@@ -235,7 +245,12 @@ a {
 	}
 
 	.filter-menu {
-		background-color: rgba(255, 255, 255, 0.9);
+		background-color: rgba(255, 255, 255, 0.95);
+		--close-btn-color: black;
+	}
+
+	.search-btn {
+		color: #000;
 	}
 }
 
@@ -490,14 +505,15 @@ label {
 .filter-menu {
 	position: fixed;
 	top: 0;
-	right: -400px;
-	width: 400px;
+	right: -300px;
+	width: 300px;
 	height: 100%;
 	box-shadow: 0 0 10px rgba(0, 0, 0, 0.2);
 	transition: right 0.3s ease;
-	z-index: 999;
+	z-index: 9999;
 	overflow-y: auto;
 	border-radius: 15px 0 0 15px;
+	box-shadow: 10px 0px 8px 5px white;
 }
 
 .filter-menu.active {
@@ -524,3 +540,16 @@ label {
 }
 
 /* Filter end */
+
+.search-input {
+	border-radius: 0;
+	padding: 0px 10px;
+	font-size: 14px;
+	height: 30px;
+	margin-top: auto;
+	margin-bottom: auto;
+}
+
+.search-btn {
+	border-radius: 0;
+}
