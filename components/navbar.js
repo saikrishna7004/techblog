@@ -27,7 +27,7 @@ const Navbar = () => {
     const handleSearchTermChange = (event) => {
         const { value } = event.target;
         setSearchText(value);
-        if (!value || value == '') {
+        if (!value || (value == '')) {
             setAutocompleteResults([])
             setShowSuggestions(false)
             return
