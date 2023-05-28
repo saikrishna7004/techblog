@@ -1,8 +1,8 @@
 import 'bootstrap/dist/css/bootstrap.min.css'
 import Link from 'next/link'
-import { useEffect, useState } from 'react';
+import { useEffect, useRef, useState } from 'react';
 import NavLink from './navlink';
-import { getSession, signIn, signOut, useSession } from 'next-auth/react';
+import { signOut, useSession } from 'next-auth/react';
 import { useRouter } from 'next/router';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faHome, faSearch } from '@fortawesome/free-solid-svg-icons';
@@ -17,16 +17,36 @@ const Navbar = () => {
     const router = useRouter()
     const { data: session, status } = useSession()
     const [searchText, setSearchText] = useState('')
-    const handleSearch = (e) => {
-        e.preventDefault()
-        router.push(`/blog/search?q=${searchText}`)
-    }
     const [autocompleteResults, setAutocompleteResults] = useState([]);
     const [showSuggestions, setShowSuggestions] = useState(false);
+    const [activeSuggestion, setActiveSuggestion] = useState(0);
+    const suggestionListRef = useRef(null);
+
+    const handleSearch = (e) => {
+        e.preventDefault()
+        setSearchText('')
+        setAutocompleteResults([])
+        setShowSuggestions(true)
+        router.push(`/blog/search?q=${searchText}`)
+    }
+
+    const handleKeyDown = (e) => {
+        if (e.key == 'ArrowUp') {
+            e.preventDefault();
+            setActiveSuggestion((prevIndex) => Math.max(prevIndex - 1, 0));
+        } else if (e.key == 'ArrowDown') {
+            e.preventDefault();
+            setActiveSuggestion((prevIndex) => Math.min(prevIndex + 1, autocompleteResults.length - 1));
+        } else if (e.key === 'Enter') {
+            e.preventDefault();
+            handleSuggession(e, autocompleteResults[activeSuggestion]);
+        }
+    };
 
     const handleSearchTermChange = (event) => {
         const { value } = event.target;
         setSearchText(value);
+        setActiveSuggestion(0)
         if (!value || (value == '')) {
             setAutocompleteResults([])
             setShowSuggestions(false)
@@ -41,12 +61,22 @@ const Navbar = () => {
             .catch((error) => console.error('Error fetching autocomplete results:', error));
     };
 
-    const handleSuggession = () => { 
+    const handleSuggession = (e, result) => {
+        if(!result) return
         router.push(`/blog/${result.slug}`)
         setSearchText('')
         setShowSuggestions(false)
-        setAutocompleteResults([]) 
+        setAutocompleteResults([])
     }
+
+    useEffect(() => {
+        if (suggestionListRef.current) {
+            const suggestionItem = suggestionListRef.current.querySelector(`.autocomplete-suggestion:nth-child(${activeSuggestion + 1})`);
+            if (suggestionItem) {
+                suggestionItem.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
+            }
+        }
+    }, [activeSuggestion]);
 
     return (
         <>
@@ -90,12 +120,12 @@ const Navbar = () => {
                 <div className="container-fluid">
                     <Link className='ms-4' href='/'><FontAwesomeIcon icon={faHome} style={{ color: 'var(--navbar-text)' }} /></Link>
                     <form className="d-flex me-2" onSubmit={handleSearch}>
-                        <input className="form-control search-input" type="search" value={searchText} onChange={handleSearchTermChange} placeholder="Search" aria-label="Search" />
+                        <input className="form-control search-input" type="search" value={searchText} onChange={handleSearchTermChange} placeholder="Search" aria-label="Search" onKeyDown={handleKeyDown} />
                         <button className="btn search-btn" type='submit'><FontAwesomeIcon icon={faSearch} className="search-icon" /></button>
                         {showSuggestions && (
-                            <ul className="autocomplete-suggestions">
-                                {autocompleteResults.map((result) => (
-                                    <li className="autocomplete-suggestion" key={result._id} onClick={handleSuggession}>
+                            <ul className="autocomplete-suggestions" ref={suggestionListRef}>
+                                {autocompleteResults.map((result, index) => (
+                                    <li className={`autocomplete-suggestion${index === activeSuggestion ? ' active' : ''}`} key={result._id} onClick={(e) => handleSuggession(e, result)}>
                                         {result.title}
                                     </li>
                                 ))}

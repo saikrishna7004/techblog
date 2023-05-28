@@ -24,7 +24,6 @@ const BlogHome = () => {
 			setLoading(false)
 			setPosts(data.blogs)
             setMore(data.blogs.length!=0)
-			console.log(data.blogs)
 		}).catch(error => console.log(error))
 	}, [q])
 

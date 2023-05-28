@@ -169,12 +169,16 @@ a {
 		background: #111;
 	}
 
-	.autocomplete-suggestions a{
+	.autocomplete-suggestions a {
 		color: white;
 	}
 
 	.autocomplete-suggestion:hover {
 		background: #333;
+	}
+
+	.autocomplete-suggestion.active {
+		background-color: #333 !important;
 	}
 }
 
@@ -269,12 +273,16 @@ a {
 		background: #eee;
 	}
 
-	.autocomplete-suggestions a{
+	.autocomplete-suggestions a {
 		color: black;
 	}
 
 	.autocomplete-suggestion:hover {
 		background: #ccc;
+	}
+
+	.autocomplete-suggestion.active {
+		background-color: #f2f2f2 !important;
 	}
 }
 
