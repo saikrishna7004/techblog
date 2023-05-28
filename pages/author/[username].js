@@ -15,30 +15,34 @@ const AuthorDetailsPage = () => {
         "email": "",
         "type": ""
     })
+    const [loading, setLoading] = useState(true)
 
     useEffect(() => {
+        setLoading(true)
         fetch('/api/author', {
             method: 'POST',
-            body: JSON.stringify({username}),
+            body: JSON.stringify({ username }),
             headers: {
                 'Content-Type': 'application/json'
             }
-        }).then(d=>d.json()).then(data=>{
+        }).then(d => d.json()).then(data => {
             console.log(data)
-            setAuthor(data)})
+            setLoading(false)
+            setAuthor(data)
+        })
     }, [])
-    
+
 
     return (
         <div className="container">
-            {author.email ? <div className="row justify-content-center d-flex align-items-center" style={{minHeight: '80vh'}}>
+            {author.email ? <div className="row justify-content-center d-flex align-items-center" style={{ minHeight: '80vh' }}>
                 <div className="col-md-8">
                     <div className="card">
                         <div className="card-body">
                             <div className="text-center mb-4">
                                 <img src={author.image} alt="Author" className="rounded-circle" width={150} height={150} />
                             </div>
-                            <h2 className="d-flex align-items-center justify-content-center">{`${author.firstName} ${author.lastName}`} {author.type=='admin' && <img className='my-1 mx-1' style={{ pointerEvents: "none", userSelect: "none" }} src={'/verified.svg'} height='25px' width='25px' />}</h2>
+                            <h2 className="d-flex align-items-center justify-content-center">{`${author.firstName} ${author.lastName}`} {author.type == 'admin' && <img className='my-1 mx-1' style={{ pointerEvents: "none", userSelect: "none" }} src={'/verified.svg'} height='25px' width='25px' />}</h2>
                             <p className="text-center">{author.bio}</p>
                             <div className="text-center">
                                 <span className="badge bg-primary me-2">{author.type}</span>
@@ -50,7 +54,7 @@ const AuthorDetailsPage = () => {
                         </div>
                     </div>
                 </div>
-            </div> : <div className='my-4'>Username invalid</div>}
+            </div> : (loading ? "Loading..." : <div className='my-4'>Username invalid</div>)}
         </div>
     );
 };
