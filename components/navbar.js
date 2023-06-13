@@ -19,7 +19,7 @@ const Navbar = () => {
     const [searchText, setSearchText] = useState('')
     const [autocompleteResults, setAutocompleteResults] = useState([]);
     const [showSuggestions, setShowSuggestions] = useState(false);
-    const [activeSuggestion, setActiveSuggestion] = useState(0);
+    const [activeSuggestion, setActiveSuggestion] = useState(-1);
     const suggestionListRef = useRef(null);
 
     const handleSearch = (e) => {
@@ -39,6 +39,13 @@ const Navbar = () => {
             setActiveSuggestion((prevIndex) => Math.min(prevIndex + 1, autocompleteResults.length - 1));
         } else if (e.key === 'Enter') {
             e.preventDefault();
+            if(activeSuggestion==-1){
+                handleSearch(e)
+                setSearchText('')
+                setShowSuggestions(false)
+                setAutocompleteResults([])
+                return
+            }
             handleSuggession(e, autocompleteResults[activeSuggestion]);
         }
     };
@@ -46,7 +53,7 @@ const Navbar = () => {
     const handleSearchTermChange = (event) => {
         const { value } = event.target;
         setSearchText(value);
-        setActiveSuggestion(0)
+        setActiveSuggestion(-1)
         if (!value || (value == '')) {
             setAutocompleteResults([])
             setShowSuggestions(false)

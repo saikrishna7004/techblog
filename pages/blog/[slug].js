@@ -9,6 +9,7 @@ import { getSession, useSession } from 'next-auth/react'
 import Head from 'next/head'
 import Swal from 'sweetalert2'
 import ShareButtons from '../../components/share'
+import BlogCard from '../../components/blogcard'
 
 const BlogPost = ({ login }) => {
     const router = useRouter()
@@ -17,6 +18,7 @@ const BlogPost = ({ login }) => {
     const [blog, setBlog] = useState({})
     const [author, setAuthor] = useState({})
     const [loading, setLoading] = useState(true)
+    const [latest, setLatest] = useState([])
     const { data: session, status } = useSession()
 
     useEffect(() => {
@@ -52,6 +54,17 @@ const BlogPost = ({ login }) => {
         })
     }, [slug])
 
+    useEffect(() => {
+		setLoading(true)
+		fetch('/api/latest/').then(d => d.json()).then(data => {
+			setLoading(false)
+			setLatest(data.blogs || [])
+		}).catch(error => {
+            setLoading(false)
+            console.log(error)
+        })
+	}, [])
+
     const handleDelete = () => {
         const swalWithBootstrapButtons = Swal.mixin({
             customClass: {
@@ -84,7 +97,7 @@ const BlogPost = ({ login }) => {
                             'Deleted!',
                             'Your file has been deleted.',
                             'success'
-                        ).then(()=>router.push('/blog'))
+                        ).then(() => router.push('/blog'))
                     })
                     .catch((error) => console.error('Error deleting blogs', error));
 
@@ -97,6 +110,18 @@ const BlogPost = ({ login }) => {
             }
         })
     }
+
+	const truncate = (text, maxLength) => {
+		if (!text) return "";
+		text = text.replace(/<[^>]+>/g, '')
+		let truncatedText = text.substr(0, maxLength);
+		const lastSpaceIndex = truncatedText.lastIndexOf(" ");
+		if (lastSpaceIndex !== -1) {
+			truncatedText = truncatedText.substr(0, lastSpaceIndex);
+		}
+		if (truncatedText.length <= maxLength) return truncatedText;
+		return truncatedText + '...'
+	}
 
     return (
         <main className='mx-auto' style={{ maxWidth: '900px' }}>
@@ -134,7 +159,20 @@ const BlogPost = ({ login }) => {
                             </div>
                         </div>
                         <div className='content px-4' dangerouslySetInnerHTML={{ __html: blog.content }} />
-                    </> : (loading ? (<div className='container' style={{scale: '1/2', overflowX: 'hidden'}}>
+                        <div className="px-4 my-4">
+                            <h5>Tags</h5>
+                            <div className="my-4">
+                                {
+                                    blog.tags?.split(',').map((e, i) => {
+                                        return <span key={i} className={`badge badge-lg fs-6 rounded-pill text-bg-light me-2`}>
+                                            {e.trim()}
+                                        </span>
+                                    })
+                                }
+                                {!blog.tags && '-None-'}
+                            </div>
+                        </div>
+                    </> : (loading ? (<div className='container' style={{ scale: '1/2', overflowX: 'hidden' }}>
                         <Shimmer width={500} height={20} duration={1500} />
                         <Shimmer width={400} height={20} duration={1500} />
                         <Shimmer width={200} height={200} duration={1500} />
@@ -143,6 +181,33 @@ const BlogPost = ({ login }) => {
                         Blog doesn&apos;t exist
                     </div>)
                 }
+            </div>
+            <hr className='my-5' />
+            <div className="px-4 my-5">
+                <h4>Read More</h4>
+                <div className="my-4 row">
+                    {latest.map((post) => (
+                        (blog._id!=post._id) && <div key={post._id} className="col-md-6 col-sm-12">
+                            <BlogCard
+                                title={post.title}
+                                summary={truncate(post.content, 80)}
+                                slug={post.slug}
+                                image={post.image}
+                                edit={session && session.user && session.user.type == "admin"}
+                                tag={post.tags}
+                                author={`${post.author.firstName} ${post.author.lastName}`}
+                                verified={post.author.type == "admin"}
+                            />
+                        </div>
+                    ))}
+                    {
+                        loading && <div className="mb-4">
+                            <svg className="spinner" viewBox="0 0 50 50">
+                                <circle className="path" cx="25" cy="25" r="20" fill="none" strokeWidth="5"></circle>
+                            </svg>
+                        </div>
+                    }
+                </div>
             </div>
             {login && session && (session.user._id == author._id) && <FloatingActionButton link={router.asPath + '/edit'} handleDelete={handleDelete} />}
         </main>

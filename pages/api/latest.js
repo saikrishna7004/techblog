@@ -1,5 +1,6 @@
 import connectMongo from '../../utils/connectMongo';
 import BlogPost from '../../models/blogpost';
+import User from '../../models/user';
 
 async function connect() {
 	await connectMongo();
@@ -49,6 +50,11 @@ export default async function handler(req, res) {
 
 		if (req.query.type) {
 			filters.type = { $in: req.query.type.split(',') };
+		}
+
+		if (req.query.author) {
+			const author = await User.findOne({ username: req.query.author });
+			filters.author = author._id;
 		}
 
 		const blogs = await BlogPost.find(filters)

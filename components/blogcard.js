@@ -47,11 +47,10 @@ export default function BlogCard({ title, summary, slug, image, edit, tag, autho
         });
     }
 
+    const colors = ['bg-danger', 'bg-primary', 'bg-secondary', 'bg-success', 'bg-warning', 'bg-info']
+
     return (
         <div className='position-relative'>
-            {tag && <span className="position-absolute top-0 translate-middle badge rounded-pill bg-danger" style={{ zIndex: 100, right: -30 }}>
-                {tag}
-            </span>}
             <div href={`/blog/${slug}`} className="blog-card" style={{ borderRadius: '5px' }}>
                 <div className="card" style={{ background: avgColor }}>
                     <Link href={`/blog/${slug}`}>
@@ -63,9 +62,15 @@ export default function BlogCard({ title, summary, slug, image, edit, tag, autho
                         <p className="card-text">{summary}</p>
                         {tag && (
                             <div className="badge-group mb-4">
-                                {tag.split(',').map((tag, index) => (
-                                    <span key={index} className="badge rounded-pill bg-danger">{tag.trim()}</span>
-                                ))}
+                                {
+                                    tag.split(',').map((tag, index) => {
+                                        return (
+                                            <span key={index} className={`badge rounded-pill ${colors[index%6]} me-2`}>
+                                                {tag.trim()}
+                                            </span>
+                                        );
+                                    })
+                                }
                             </div>
                         )}
                         <div className="row align-items-center mx-1">

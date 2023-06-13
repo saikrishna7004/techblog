@@ -46,11 +46,11 @@ const Home = (props) => {
 					<h1 className='my-4'>Welcome to our Tech Blog</h1>
 					<TypeAnimation
 						sequence={[
-							'Discover the latest in the programming',
+							'Discover the latest in the new programming',
 							2000,
-							'Discover the latest in the technologies',
+							'Discover the latest in the new technologies',
 							2000,
-							'Discover the latest in the industry trends',
+							'Discover the latest in the new industry trends',
 							2000,
 						]}
 						wrapper="span"
