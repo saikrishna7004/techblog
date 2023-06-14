@@ -155,7 +155,7 @@ const BlogPost = ({ login }) => {
                                 <ShareButtons className='mt-2 mb-3' />
                             </div>
                             <div className="text-center px-sm-4" style={{ overflowX: 'auto' }}>
-                                <img className="mt-3 mb-4 w-100" style={{ display: 'block', margin: '0 auto' }} src={"https://images.weserv.nl/?url=" + blog.image} alt={blog.title} crossOrigin='anonymous' />
+                                <img className="mt-3 mb-4 w-100" style={{ display: 'block', margin: '0 auto' }} src={(blog.image.includes('base64') ? '' : "https://images.weserv.nl/?url=") + blog.image} alt={blog.title} crossOrigin='anonymous' />
                             </div>
                         </div>
                         <div className='content px-4' dangerouslySetInnerHTML={{ __html: blog.content }} />
