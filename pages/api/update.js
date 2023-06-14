@@ -23,6 +23,9 @@ export default async function handler(req, res) {
         if (blog.title){
             blog.title = req.body.title;
         }
+        if (blog.image){
+            blog.image = req.body.image;
+        }
         await blog.save();
         return res.status(200).json({ ...blog._doac })
     } catch (error) {

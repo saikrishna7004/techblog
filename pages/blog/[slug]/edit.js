@@ -21,7 +21,7 @@ const BlogPost = ({ login, allowed }) => {
     const [hasChanges, setHasChanges] = useState(false);
 
     useEffect(() => {
-        if(!login) return
+        if (!login) return
 
         const handleBeforeUnload = (e) => {
             if (hasChanges) {
@@ -35,7 +35,7 @@ const BlogPost = ({ login, allowed }) => {
         return () => {
             window.removeEventListener('beforeunload', handleBeforeUnload);
         };
-    }, [hasChanges]);
+    }, [hasChanges, login]);
 
     const options = {
         timeZone: "Asia/Kolkata",
@@ -46,8 +46,7 @@ const BlogPost = ({ login, allowed }) => {
     };
 
     useEffect(() => {
-        if(!login) return
-        
+        if (!login) return
         if (!slug) return
         setLoading(true)
         fetch('/api/blog/', {
@@ -57,9 +56,9 @@ const BlogPost = ({ login, allowed }) => {
                 'Content-Type': 'application/json'
             }
         }).then(data => data.json()).then(data => {
-            // console.log(data);
+            console.log(data);
             setLoading(false)
-            if (!session || !session.user || (data.author._id != session.user._id)) return
+            if (!(session && session.user && ((data.author._id == session.user._id) || (session.user.type == 'admin')))) return
             setBlog({ ...data, author: null });
             setHasChanges(false)
             setAuthor({ ...data.author, createdAt: new Date(data.author.createdAt) })
@@ -70,7 +69,7 @@ const BlogPost = ({ login, allowed }) => {
             setAuthor({})
             setLoading(false)
         })
-    }, [slug])
+    }, [slug, login])
 
     if (!login || !allowed) return <div className='container'>Not allowed</div>
 
@@ -84,6 +83,35 @@ const BlogPost = ({ login, allowed }) => {
         setHasChanges(true)
         console.log(blog.title)
     };
+
+    const handleImageChange = (e) => {
+        Swal.fire({
+            title: 'Enter Image URL',
+            input: 'text',
+            inputPlaceholder: 'Enter the image URL',
+            inputAttributes: {
+                'aria-label': 'Image URL'
+            },
+            showCancelButton: true,
+            confirmButtonText: 'Preview',
+            preConfirm: (url) => {
+                // Display a preview of the image
+                Swal.fire({
+                    title: 'Image Preview',
+                    imageUrl: url,
+                    imageAlt: 'Preview',
+                    showCancelButton: true,
+                    cancelButtonText: 'Cancel',
+                    confirmButtonText: 'Save',
+                }).then((result) => {
+                    if (result.isConfirmed) {
+                        setBlog({...blog, image: url})
+                        Swal.fire('Image Saved!', '', 'success');
+                    }
+                });
+            }
+        });
+    }
 
     const submitBlog = () => {
 
@@ -166,18 +194,18 @@ const BlogPost = ({ login, allowed }) => {
             </Head>
             <div className="my-4 w-100">
                 {
-                    (session && session.user._id == author._id) ? (blog._id ? <>
+                    (session && ((session.user.type == 'admin') || (session.user._id == author._id))) && blog._id && <>
                         <div className="d-flex flex-column">
                             <div className='px-4'>
                                 <nav className='my-4 d-sm-block d-none' aria-label="breadcrumb">
                                     <ol className="breadcrumb">
                                         <li className="breadcrumb-item"><Link href="/">Home</Link></li>
                                         <li className="breadcrumb-item"><Link href="/blog">Blogs</Link></li>
-                                        <li className="breadcrumb-item"><Link href={"/blog/"+blog.slug}>{blog.title}</Link></li>
+                                        <li className="breadcrumb-item"><Link href={"/blog/" + blog.slug}>{blog.title}</Link></li>
                                         <li className="breadcrumb-item active" aria-current="page">Edit</li>
                                     </ol>
                                 </nav>
-                                <Link href={"/blog/"+blog.slug} className='d-flex align-items-center my-4 d-sm-none'><FontAwesomeIcon icon={faAngleLeft} size='2xs' />&nbsp;&nbsp;Blog</Link>
+                                <Link href={"/blog/" + blog.slug} className='d-flex align-items-center my-4 d-sm-none'><FontAwesomeIcon icon={faAngleLeft} size='2xs' />&nbsp;&nbsp;Blog</Link>
                                 <h1 className="mb-3 p-1 editable border-hover" name="title" contentEditable={true} onBlur={handleTitleChange} data-placeholder="Title" dangerouslySetInnerHTML={{ __html: blog.title }}></h1>
                                 <p className="text-muted">{new Date(blog.createdAt).toLocaleString("en-US", options)}</p>
                                 <Link className='mylink' href={'/author/' + author.username}>
@@ -191,7 +219,7 @@ const BlogPost = ({ login, allowed }) => {
                                 </Link>
                             </div>
                             <div className="text-center px-sm-4" style={{ overflowX: 'auto' }}>
-                                <img className="mt-3 mb-4 w-100" style={{ display: 'block', margin: '0 auto' }} src={blog.image} alt={blog.title} />
+                                <img className="mt-3 mb-4 w-100 border-hover" style={{ display: 'block', margin: '0 auto' }} src={blog.image} alt={blog.title} onClick={handleImageChange} />
                             </div>
                             <div className="mx-4 mb-4">
                                 <Editor
@@ -215,16 +243,21 @@ const BlogPost = ({ login, allowed }) => {
                                 <button type="submit" onClick={submitBlog} className="btn btn-primary my-4">Submit</button>
                             </div>
                         </div>
-                    </> : (loading ? (<>
+                    </>
+                }
+                {
+                    !(session && ((session.user.type == 'admin') || (session.user._id == author._id))) && <div>Not Allowed</div>
+                }
+                {
+                    session && ((session.user.type == 'admin') || (session.user._id == author._id)) && !loading && !blog._id && <div>Blog doesn&apos;t exist</div>
+                }
+                {
+                    loading && <>
                         <Shimmer width={500} height={20} duration={1500} />
                         <Shimmer width={400} height={20} duration={1500} />
                         <Shimmer width={200} height={200} duration={1500} />
                         <Shimmer width={450} height={20} duration={1500} />
-                    </>) : <div>
-                        Blog doesn&apos;t exist
-                    </div>)) : <div>
-                        Not allowed
-                    </div>
+                    </>
                 }
             </div>
         </main>

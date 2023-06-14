@@ -16,7 +16,7 @@ export default async function handler(req, res) {
     try {
         // console.log(req.body)
         const blog = await BlogPost.create({
-            ...req.body, slug: slugify(req.body.title, {
+            ...req.body, slug: slugify(req.body.title.replace(/[\u{1F300}-\u{1F6FF}\u{2600}-\u{26FF}\u{2700}-\u{27BF}\u{1F900}-\u{1F9FF}\u{1F1E6}-\u{1F1FF}\u{1F191}-\u{1F251}]/gu, ''), {
                 remove: /[*+~.()'"!:@]/g,
                 lower: true
             })
@@ -41,7 +41,7 @@ export default async function handler(req, res) {
         }
         if (error.keyValue && error.keyValue.slug) {
             const blog = await BlogPost.create({
-                ...req.body, slug: slugify(req.body.title, {
+                ...req.body, slug: slugify(req.body.title.replace(/[\u{1F300}-\u{1F6FF}\u{2600}-\u{26FF}\u{2700}-\u{27BF}\u{1F900}-\u{1F9FF}\u{1F1E6}-\u{1F1FF}\u{1F191}-\u{1F251}]/gu, ''), {
                     remove: /[*+~.()'"!:@]/g,
                     lower: true
                 }) + "-" + Math.random().toString(36).substring(2, 7)

@@ -209,7 +209,7 @@ const BlogPost = ({ login }) => {
                     }
                 </div>
             </div>
-            {login && session && (session.user._id == author._id) && <FloatingActionButton link={router.asPath + '/edit'} handleDelete={handleDelete} />}
+            {login && session && ((session.user.type == 'admin') || (session.user._id == author._id)) && <FloatingActionButton link={router.asPath + '/edit'} handleDelete={handleDelete} />}
         </main>
     )
 }
