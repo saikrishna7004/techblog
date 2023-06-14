@@ -8,7 +8,7 @@ function Write({ login }) {
 
     const { data: session, status } = useSession()
 
-    const [blog, setBlog] = useState({ title: "", image: "", content: "", author: session?.user?._id, type: "regular", tags: "" })
+    const [blog, setBlog] = useState({ title: "", image: "https://neorablog.com/wp-content/uploads/2019/04/1200x600-Placeholder.png", content: "", author: session?.user?._id, type: "regular", tags: "" })
     const [isValid, setIsValid] = useState({ title: true, image: true })
     const [authors, setAuthors] = useState([])
 
@@ -103,6 +103,35 @@ function Write({ login }) {
         setBlog({ ...blog, [e.target.name]: e.target.value })
     }
 
+    const handleImageChange = (e) => {
+        Swal.fire({
+            title: 'Enter Image URL',
+            input: 'text',
+            inputPlaceholder: 'Enter the image URL',
+            inputAttributes: {
+                'aria-label': 'Image URL'
+            },
+            showCancelButton: true,
+            confirmButtonText: 'Preview',
+            preConfirm: (url) => {
+                // Display a preview of the image
+                Swal.fire({
+                    title: 'Image Preview',
+                    imageUrl: url,
+                    imageAlt: 'Preview',
+                    showCancelButton: true,
+                    cancelButtonText: 'Cancel',
+                    confirmButtonText: 'Save',
+                }).then((result) => {
+                    if (result.isConfirmed) {
+                        setBlog({...blog, image: url})
+                        Swal.fire('Image Saved!', '', 'success');
+                    }
+                });
+            }
+        });
+    }
+
     if (!login) return <div className='container my-4'>
         <h4>Want to contribute?</h4>
         <p>Reach out to us at our mail to get your credentials and start contributing the blogs.</p>
@@ -121,13 +150,6 @@ function Write({ login }) {
                             <input type="text" className={"form-control " + (isValid.title ? '' : 'is-invalid')} id="title" name="title" onChange={handleInputChange} value={blog.title} />
                             <div className="invalid-feedback">
                                 Please enter a title.
-                            </div>
-                        </div>
-                        <div className="form-group mb-3 col-md-5">
-                            <label htmlFor="image">Cover Image URL</label>
-                            <input type="text" className={"form-control " + (isValid.image ? '' : 'is-invalid')} id="image" name="image" onChange={handleInputChange} value={blog.image} />
-                            <div className="invalid-feedback">
-                                Please enter an image URL.
                             </div>
                         </div>
                         <div className="form-group mb-3 col-md-5">
@@ -153,6 +175,12 @@ function Write({ login }) {
                         <div className="form-group mb-3 col-md-5">
                             <label htmlFor="tags">Tags</label>
                             <input type="text" className="form-control" id="tags" name="tags" onChange={handleInputChange} value={blog.tags} />
+                        </div>
+                        <div className="form-group mb-3 col-md-5" style={{cursor: 'pointer'}}>
+                            <label htmlFor="image">Cover Image</label>
+                            <div className="text-center px-sm-4" style={{ overflowX: 'auto' }}>
+                                <img className="mt-3 mb-4 w-100 border-hover" style={{ display: 'block', margin: '0 auto' }} src={blog.image} alt={blog.title} onClick={handleImageChange} />
+                            </div>
                         </div>
                         <div className="form-group mb-3">
                             <label htmlFor="content">Content</label>
