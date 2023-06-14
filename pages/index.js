@@ -95,7 +95,7 @@ const Home = (props) => {
 					</div>
 				}
 			</div>
-			<h2 className='my-4'>Lastest Blogs - In a Week</h2>
+			<h2 className='my-4'>Latest Blogs - In a Week</h2>
 			<div className="row">
 				{latest.map(post => (
 					<div key={post._id} className="col-md-6 col-sm-12 col-lg-4">

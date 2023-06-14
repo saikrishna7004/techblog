@@ -54,7 +54,7 @@ export default function BlogCard({ title, summary, slug, image, edit, tag, autho
             <div href={`/blog/${slug}`} className="blog-card" style={{ borderRadius: '5px' }}>
                 <div className="card" style={{ background: avgColor }}>
                     <Link href={`/blog/${slug}`}>
-                        <img className="card-img-top" style={{ aspectRatio: 2, objectFit: 'contain' }} src={"https://images.weserv.nl/?url=" + image} alt={title} ref={ref} />
+                        <img className="card-img-top" style={{ aspectRatio: 2, objectFit: 'contain' }} src={(image.includes('base64') ? '' : "https://images.weserv.nl/?url=") + image} alt={title} ref={ref} />
                     </Link>
                     <div className="card-body">
                         <h5 className="card-title">{title}</h5>
