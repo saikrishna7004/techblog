@@ -164,7 +164,7 @@ const BlogPost = ({ login }) => {
                             <div className="my-4">
                                 {
                                     blog.tags?.split(',').map((e, i) => {
-                                        return <span key={i} className={`badge badge-lg fs-6 rounded-pill text-bg-light me-2`}>
+                                        return <span key={i} className={`badge badge-lg fs-6 rounded-pill text-bg-light me-2 mb-2`}>
                                             {e.trim()}
                                         </span>
                                     })

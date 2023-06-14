@@ -13,11 +13,11 @@ function Write({ login }) {
     const [authors, setAuthors] = useState([])
 
     useEffect(() => {
-        if(login)
-        fetch('/api/authors')
-            .then((response) => response.json())
-            .then((data) => setAuthors(data.users))
-            .catch((error) => console.error('Error fetching authors:', error));
+        if (login)
+            fetch('/api/authors')
+                .then((response) => response.json())
+                .then((data) => setAuthors(data.users))
+                .catch((error) => console.error('Error fetching authors:', error));
     }, []);
 
     const submitBlog = () => {
@@ -124,7 +124,7 @@ function Write({ login }) {
                     confirmButtonText: 'Save',
                 }).then((result) => {
                     if (result.isConfirmed) {
-                        setBlog({...blog, image: url})
+                        setBlog({ ...blog, image: url })
                         Swal.fire('Image Saved!', '', 'success');
                     }
                 });
@@ -163,20 +163,28 @@ function Write({ login }) {
                             </select>
                         </div>
                         {session && session.user && (session.user.type == 'admin') && <div className="form-group mb-3 col-md-5">
-                                <label htmlFor="author">Author</label>
-                                <select className="form-select" id="author" name="author" onChange={handleInputChange} value={blog.author}>
-                                    {authors.map((author) => (
-                                        <option key={author._id} value={author._id}>
-                                            {author.firstName} {author.lastName}
-                                        </option>
-                                    ))}
-                                </select>
-                            </div>}
+                            <label htmlFor="author">Author</label>
+                            <select className="form-select" id="author" name="author" onChange={handleInputChange} value={blog.author}>
+                                {authors.map((author) => (
+                                    <option key={author._id} value={author._id}>
+                                        {author.firstName} {author.lastName}
+                                    </option>
+                                ))}
+                            </select>
+                        </div>}
                         <div className="form-group mb-3 col-md-5">
                             <label htmlFor="tags">Tags</label>
                             <input type="text" className="form-control" id="tags" name="tags" onChange={handleInputChange} value={blog.tags} />
+                            <div className="badge-group mb-4">
+                                {blog.tags.split(',').map((tag, index) => (
+                                    <span key={index} className="badge rounded-pill bg-primary me-2 my-2">
+                                        {tag}
+                                    </span>
+                                ))}
+                            </div>
+
                         </div>
-                        <div className="form-group mb-3 col-md-5" style={{cursor: 'pointer'}}>
+                        <div className="form-group mb-3 col-md-5" style={{ cursor: 'pointer' }}>
                             <label htmlFor="image">Cover Image</label>
                             <div className="text-center px-sm-4" style={{ overflowX: 'auto' }}>
                                 <img className="mt-3 mb-4 w-100 border-hover" style={{ display: 'block', margin: '0 auto' }} src={blog.image} alt={blog.title} onClick={handleImageChange} />

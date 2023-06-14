@@ -65,7 +65,7 @@ export default function BlogCard({ title, summary, slug, image, edit, tag, autho
                                 {
                                     tag.split(',').map((tag, index) => {
                                         return (
-                                            <span key={index} className={`badge rounded-pill ${colors[index%6]} me-2`}>
+                                            <span key={index} className={`badge rounded-pill ${colors[index%6]} me-2 mb-2`}>
                                                 {tag.trim()}
                                             </span>
                                         );
