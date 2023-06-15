@@ -173,7 +173,7 @@ function Write({ login }) {
                             </select>
                         </div>}
                         <div className="form-group mb-3 col-md-5">
-                            <label htmlFor="tags">Tags</label>
+                        <label htmlFor="tags">Tags&nbsp;</label><span className="text-secondary">(Comma seperated)</span>
                             <input type="text" className="form-control" id="tags" name="tags" onChange={handleInputChange} value={blog.tags} />
                             <div className="badge-group mb-4">
                                 {blog.tags.split(',').map((tag, index) => (
@@ -182,7 +182,6 @@ function Write({ login }) {
                                     </span>
                                 ))}
                             </div>
-
                         </div>
                         <div className="form-group mb-3 col-md-5" style={{ cursor: 'pointer' }}>
                             <label htmlFor="image">Cover Image</label>

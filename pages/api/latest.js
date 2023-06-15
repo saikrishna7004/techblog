@@ -37,7 +37,7 @@ export default async function handler(req, res) {
 
 			if (req.query.q) {
 				const regex = new RegExp(q, 'i');
-				filters.$or = [{ title: regex }, { content: regex }];
+				filters.$or = [{ title: regex }, { content: regex }, { tags: regex }];
 			}
 		}
 

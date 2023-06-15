@@ -78,6 +78,10 @@ const BlogPost = ({ login, allowed }) => {
         setHasChanges(true)
     }
 
+    const handleInputChange = (e) => {
+        setBlog({ ...blog, [e.target.name]: e.target.value })
+    }
+
     const handleTitleChange = (e) => {
         setBlog({ ...blog, title: e.target.innerHTML })
         setHasChanges(true)
@@ -105,7 +109,7 @@ const BlogPost = ({ login, allowed }) => {
                     confirmButtonText: 'Save',
                 }).then((result) => {
                     if (result.isConfirmed) {
-                        setBlog({...blog, image: url})
+                        setBlog({ ...blog, image: url })
                         Swal.fire('Image Saved!', '', 'success');
                     }
                 });
@@ -220,6 +224,17 @@ const BlogPost = ({ login, allowed }) => {
                             </div>
                             <div className="text-center px-sm-4" style={{ overflowX: 'auto' }}>
                                 <img className="mt-3 mb-4 w-100 border-hover" style={{ display: 'block', margin: '0 auto' }} src={blog.image} alt={blog.title} onClick={handleImageChange} />
+                            </div>
+                            <div className="mx-4 mb-3 col-md-5">
+                                <label htmlFor="tags">Tags&nbsp;</label><span className="text-secondary">(Comma seperated)</span>
+                                <input type="text" className="form-control" id="tags" name="tags" onChange={handleInputChange} value={blog.tags} />
+                                <div className="badge-group mb-4">
+                                    {blog.tags.split(',').map((tag, index) => (
+                                        <span key={index} className="badge rounded-pill bg-primary me-2 my-2">
+                                            {tag}
+                                        </span>
+                                    ))}
+                                </div>
                             </div>
                             <div className="mx-4 mb-4">
                                 <Editor

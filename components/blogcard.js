@@ -57,7 +57,7 @@ export default function BlogCard({ title, summary, slug, image, edit, tag, autho
                         <img className="card-img-top" style={{ aspectRatio: 2, objectFit: 'contain' }} src={(image.includes('base64') ? '' : "https://images.weserv.nl/?url=") + image} alt={title} ref={ref} />
                     </Link>
                     <div className="card-body">
-                        <h5 className="card-title">{title}</h5>
+                        <h5 className="card-title text-decoration-hover-underline"><Link href={`/blog/${slug}`} style={{color: 'initial'}}>{title}</Link></h5>
                         <p className="fs-6 align-items-center d-flex">By {author} {verified && <img className='my-1 mx-1' style={{ pointerEvents: "none", userSelect: "none" }} src={'/verified.svg'} height='20px' width='20px' />}</p>
                         <p className="card-text">{summary}</p>
                         {tag && (

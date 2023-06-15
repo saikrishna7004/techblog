@@ -628,3 +628,7 @@ label {
 .autocomplete-suggestion:last-child {
 	border-bottom: none;
 }
+
+.text-decoration-hover-underline:hover {
+	text-decoration: underline;
+}
