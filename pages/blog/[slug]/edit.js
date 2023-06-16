@@ -222,7 +222,7 @@ const BlogPost = ({ login, allowed }) => {
                                     </div>
                                 </Link>
                             </div>
-                            <div className="text-center px-sm-4" style={{ overflowX: 'auto' }}>
+                            <div className="text-center px-sm-4" style={{ overflowX: 'auto', cursor: 'pointer' }}>
                                 <img className="mt-3 mb-4 w-100 border-hover" style={{ display: 'block', margin: '0 auto' }} src={blog.image} alt={blog.title} onClick={handleImageChange} />
                             </div>
                             <div className="mx-4 mb-3 col-md-5">

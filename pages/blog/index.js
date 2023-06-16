@@ -163,6 +163,7 @@ const BlogHome = () => {
 							summary={truncate(post.content, 80)}
 							slug={post.slug}
 							image={post.image}
+							tag={post.tags}
 							edit={session && session.user && session.user.type == "admin"}
 							author={`${post.author.firstName} ${post.author.lastName}`}
 							verified={post.author.type == "admin"}
