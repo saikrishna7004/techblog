@@ -47,6 +47,18 @@ export default function BlogCard({ title, summary, slug, image, edit, tag, autho
         });
     }
 
+    function handleError(event, url) {
+        const image = event.target;
+        if (image) {
+            image.onerror = null
+            image.src = "https://images.weserv.nl/?url=" + url
+            image.addEventListener('error', async function handleFallbackError() {
+                image.removeEventListener('error', handleFallbackError)
+                image.src = "/api/image?url=" + url
+            });
+        }
+    }
+
     const colors = ['bg-danger', 'bg-primary', 'bg-secondary', 'bg-success', 'bg-warning', 'bg-info']
 
     return (
@@ -54,10 +66,10 @@ export default function BlogCard({ title, summary, slug, image, edit, tag, autho
             <div href={`/blog/${slug}`} className="blog-card" style={{ borderRadius: '5px' }}>
                 <div className="card" style={{ background: avgColor }}>
                     <Link href={`/blog/${slug}`}>
-                        <img className="card-img-top" style={{ aspectRatio: 2, objectFit: 'contain' }} src={(image.includes('base64') ? '' : "https://images.weserv.nl/?url=") + image} alt={title} ref={ref} />
+                        <img className="card-img-top" style={{ aspectRatio: 2, objectFit: 'contain' }} src={image} onError={(event) => handleError(event, image)} alt={title} ref={ref} />
                     </Link>
                     <div className="card-body">
-                        <h5 className="card-title text-decoration-hover-underline"><Link href={`/blog/${slug}`} style={{color: 'initial'}}>{title}</Link></h5>
+                        <h5 className="card-title text-decoration-hover-underline"><Link href={`/blog/${slug}`} style={{ color: 'initial' }}>{title}</Link></h5>
                         <p className="fs-6 align-items-center d-flex">By {author} {verified && <img className='my-1 mx-1' style={{ pointerEvents: "none", userSelect: "none" }} src={'/verified.svg'} height='20px' width='20px' />}</p>
                         <p className="card-text">{summary}</p>
                         {tag && (
@@ -65,7 +77,7 @@ export default function BlogCard({ title, summary, slug, image, edit, tag, autho
                                 {
                                     tag.split(',').map((tag, index) => {
                                         return (
-                                            <span key={index} className={`badge rounded-pill ${colors[index%6]} me-2 mb-2`}>
+                                            <span key={index} className={`badge rounded-pill ${colors[index % 6]} me-2 mb-2`}>
                                                 {tag.trim()}
                                             </span>
                                         );
