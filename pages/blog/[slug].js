@@ -95,7 +95,7 @@ const BlogPost = ({ login }) => {
                         if (!response.ok) return Swal.fire('Error', 'An error occured, your blog isn\'t deleted!', 'error')
                         return swalWithBootstrapButtons.fire(
                             'Deleted!',
-                            'Your file has been deleted.',
+                            'Your blog has been deleted.',
                             'success'
                         ).then(() => router.push('/blog'))
                     })

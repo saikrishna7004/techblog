@@ -3,10 +3,12 @@ import { Editor } from '@tinymce/tinymce-react'
 import { useEffect, useState } from 'react';
 import Swal from 'sweetalert2';
 import { getSession, useSession } from 'next-auth/react';
+import { useRouter } from 'next/router';
 
 function Write({ login }) {
 
     const { data: session, status } = useSession()
+    const router = useRouter();
 
     const [blog, setBlog] = useState({ title: "", image: "https://neorablog.com/wp-content/uploads/2019/04/1200x600-Placeholder.png", content: "", author: session?.user?._id, type: "regular", tags: "" })
     const [isValid, setIsValid] = useState({ title: true, image: true })
@@ -70,6 +72,10 @@ function Write({ login }) {
                             icon: 'success',
                             title: `Saved`,
                             text: 'Blog saved successfully'
+                        }).then(result=>{
+                            if (result.isConfirmed) {
+                                router.push('/blog/'+data.slug)
+                            }
                         })
                         return data;
                     });
@@ -83,14 +89,6 @@ function Write({ login }) {
                 })
             },
             allowOutsideClick: () => !Swal.isLoading()
-        }).then((result) => {
-            if (result.isConfirmed) {
-                Swal.fire({
-                    icon: 'success',
-                    title: `Saved`,
-                    text: 'Blog saved successfully'
-                })
-            }
         })
     }
 
