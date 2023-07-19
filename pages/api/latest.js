@@ -3,8 +3,8 @@ import BlogPost from '../../models/blogpost';
 import User from '../../models/user';
 
 async function connect() {
-	await connectMongo();
-	console.log('CONNECTED TO MONGO');
+    await connectMongo();
+    console.log('Attempted a connection');
 }
 
 connect();
