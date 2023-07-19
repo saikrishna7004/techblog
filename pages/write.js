@@ -72,9 +72,9 @@ function Write({ login }) {
                             icon: 'success',
                             title: `Saved`,
                             text: 'Blog saved successfully'
-                        }).then(result=>{
+                        }).then(result => {
                             if (result.isConfirmed) {
-                                router.push('/blog/'+data.slug)
+                                router.push('/blog/' + data.slug)
                             }
                         })
                         return data;
@@ -171,7 +171,7 @@ function Write({ login }) {
                             </select>
                         </div>}
                         <div className="form-group mb-3 col-md-5">
-                        <label htmlFor="tags">Tags&nbsp;</label><span className="text-secondary">(Comma seperated)</span>
+                            <label htmlFor="tags">Tags&nbsp;</label><span className="text-secondary">(Comma seperated)</span>
                             <input type="text" className="form-control" id="tags" name="tags" onChange={handleInputChange} value={blog.tags} />
                             <div className="badge-group mb-4">
                                 {blog.tags.split(',').map((tag, index) => (
@@ -200,7 +200,7 @@ function Write({ login }) {
                                         'advlist autolink lists link image charmap preview anchor\
                                     searchreplace visualblocks code fullscreen\
                                     insertdatetime media table code help wordcount',
-                                    toolbar: 'undo redo | styles | bold italic strikethrough forecolor backcolor | alignleft aligncenter alignright alignjustify | outdent indent | bullist numlist | formatselect | removeformat'
+                                    toolbar: 'undo redo | styles | bold italic strikethrough forecolor backcolor | alignleft aligncenter alignright alignjustify | outdent indent | bullist numlist | formatselect | removeformat',
                                 }}
                                 onEditorChange={handleEditorChange}
                                 value={blog.content}

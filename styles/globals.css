@@ -643,6 +643,11 @@ label {
 	text-decoration: underline;
 }
 
-.navbar{
+.navbar {
 	user-select: none;
+}
+
+img {
+	max-width: 100% !important;
+	height: auto;
 }

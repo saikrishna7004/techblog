@@ -238,7 +238,13 @@ const BlogPost = ({ login, allowed }) => {
                                     inline={true}
                                     instanceId="content-editor"
                                     init={{
+                                        height: 500,
                                         skin: "oxide",
+                                        plugins:
+                                            'advlist autolink lists link image charmap preview anchor\
+                                        searchreplace visualblocks code fullscreen\
+                                        insertdatetime media table code help wordcount',
+                                        toolbar: 'undo redo | styles | bold italic strikethrough forecolor backcolor | alignleft aligncenter alignright alignjustify | outdent indent | bullist numlist | formatselect | removeformat',
                                         setup: (editor) => {
                                             editor.on('init', () => {
                                                 const body = editor.getBody();

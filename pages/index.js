@@ -14,12 +14,12 @@ const Home = (props) => {
 
 	useEffect(() => {
 		setLoading(true)
-		fetch('/api/latest/?type=weekly').then(d => d.json()).then(data => {
-			setWeekly(data.blogs)
-		}).catch(error => console.log(error))
 		fetch('/api/latest/?group=week').then(d => d.json()).then(data => {
-			setLoading(false)
 			setLatest(data.blogs || [])
+		}).catch(error => console.log(error))
+		fetch('/api/latest/?type=weekly').then(d => d.json()).then(data => {
+			setLoading(false)
+			setWeekly(data.blogs)
 		}).catch(error => console.log(error))
 	}, [])
 
@@ -71,17 +71,17 @@ const Home = (props) => {
 				</div>
 			</div>
 
-			<h2 className='my-4'>Weekly Blogs</h2>
+			<h2 className='my-4'>Latest Blogs - In a Week</h2>
 			<div className="row">
-				{weekly.map((post) => (
+				{latest.map(post => (
 					<div key={post._id} className="col-md-6 col-sm-12 col-lg-4">
 						<Blog
 							title={post.title}
 							summary={truncate(post.content, 80)}
 							slug={post.slug}
 							image={post.image}
-							edit={session && session.user && session.user.type == "admin"}
 							tag={post.tags}
+							edit={session && session.user && session.user.type == "admin"}
 							author={`${post.author.firstName} ${post.author.lastName}`}
 							verified={post.author.type == "admin"}
 						/>
@@ -95,17 +95,18 @@ const Home = (props) => {
 					</div>
 				}
 			</div>
-			<h2 className='my-4'>Latest Blogs - In a Week</h2>
+
+			<h2 className='my-4'>Weekly Blogs</h2>
 			<div className="row">
-				{latest.map(post => (
+				{weekly.map((post) => (
 					<div key={post._id} className="col-md-6 col-sm-12 col-lg-4">
 						<Blog
 							title={post.title}
 							summary={truncate(post.content, 80)}
 							slug={post.slug}
 							image={post.image}
-							tag={post.tags}
 							edit={session && session.user && session.user.type == "admin"}
+							tag={post.tags}
 							author={`${post.author.firstName} ${post.author.lastName}`}
 							verified={post.author.type == "admin"}
 						/>
