@@ -124,7 +124,7 @@ const AuthorDetailsPage = () => {
                     ))
                 }
                 {
-                    !posts.length && <div className='mx-2'>--</div>
+                    !posts.length && !loading && <div className='mx-2'>--</div>
                 }
             </div>
             {

@@ -167,7 +167,11 @@ const BlogPost = ({ login, allowed }) => {
                             icon: 'success',
                             title: `Saved`,
                             text: 'Blog saved successfully'
-                        })
+                        }).then(result=>{
+                            if (result.isConfirmed) {
+                                router.push('/blog/'+data.slug)
+                            }
+                        })  
                         return data;
                     });
                 }).catch(error => {
@@ -180,14 +184,6 @@ const BlogPost = ({ login, allowed }) => {
                 })
             },
             allowOutsideClick: () => !Swal.isLoading()
-        }).then((result) => {
-            if (result.isConfirmed) {
-                Swal.fire({
-                    icon: 'success',
-                    title: `Saved`,
-                    text: 'Blog saved successfully'
-                })
-            }
         })
     }
 

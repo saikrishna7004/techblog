@@ -30,7 +30,7 @@ export default async function handler(req, res) {
             blog.tags = req.body.tags;
         }
         await blog.save();
-        return res.status(200).json({ ...blog._doac })
+        return res.status(200).json({ ...blog._doc })
     } catch (error) {
         return res.status(400).json({ error })
     }
