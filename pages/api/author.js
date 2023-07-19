@@ -1,12 +1,6 @@
 import connectMongo from '../../utils/connectMongo';
 import User from '../../models/user';
 
-async function connect() {
-    await connectMongo();
-    console.log('CONNECTED TO MONGO');
-}
-connect();
-
 export default async function handler(req, res) {
     try {
         let user = await User.findOne({username: req.body.username}).select('-password')

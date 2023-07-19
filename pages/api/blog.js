@@ -1,12 +1,6 @@
 import connectMongo from '../../utils/connectMongo';
 import BlogPost from '../../models/blogpost';
 
-async function connect() {
-    await connectMongo();
-    console.log('CONNECTED TO MONGO');
-}
-connect();
-
 export default async function handler(req, res) {
     try {
         let blog = await BlogPost.findOne({slug: req.body.slug}).populate('author', '-password')

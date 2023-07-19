@@ -3,12 +3,6 @@ import User from '../../models/user'
 import { getServerSession } from 'next-auth';
 import { authOptions } from './auth/[...nextauth]';
 
-async function connect() {
-    await connectMongo();
-    console.log('CONNECTED TO MONGO');
-}
-connect();
-
 export default async function handler(req, res) {
     const session = await getServerSession(req, res, authOptions)
     if (!session) return res.status(401).json({ error: "Unauthorised user" })
