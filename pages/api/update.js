@@ -18,16 +18,16 @@ export default async function handler(req, res) {
         if (!blog) {
             return res.status(404).json({ error: 'Blog not found' });
         }
-        if (blog.content){
+        if (req.body.content){
             blog.content = req.body.content;
         }
-        if (blog.title){
+        if (req.body.title){
             blog.title = req.body.title;
         }
-        if (blog.image){
+        if (req.body.image){
             blog.image = req.body.image;
         }
-        if (blog.tags){
+        if (req.body.tags){
             blog.tags = req.body.tags;
         }
         await blog.save();
