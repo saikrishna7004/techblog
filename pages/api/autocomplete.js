@@ -17,7 +17,7 @@ export default async function handler(req, res) {
         const query = {
             $or: regexExpressions.map(regex => ({ title: regex }))
         }
-        const blogs = await BlogPost.find(query, 'title slug')
+        const blogs = await BlogPost.find(query, 'title slug').sort({ createdAt: -1 });
         console.log(blogs)
         return res.status(200).json(blogs);
     } catch (error) {
