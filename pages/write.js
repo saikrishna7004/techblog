@@ -1,9 +1,13 @@
 import Head from 'next/head'
-import { Editor } from '@tinymce/tinymce-react'
 import { useEffect, useState } from 'react';
 import Swal from 'sweetalert2';
 import { getSession, useSession } from 'next-auth/react';
 import { useRouter } from 'next/router';
+import dynamic from 'next/dynamic';
+
+const CustomEditor = dynamic(() => {
+    return import('../components/custom-editor');
+}, { ssr: false });
 
 function Write({ login }) {
 
@@ -66,6 +70,7 @@ function Write({ login }) {
                 }).then(response => {
                     return response.json().then(data => {
                         if (!response.ok) {
+                            console.log(data)
                             throw new Error(data.error || response.statusText);
                         }
                         Swal.fire({
@@ -157,7 +162,7 @@ function Write({ login }) {
                                 <option value="weekly">Weekly</option>
                                 <option value="biweekly">Bi Weekly</option>
                                 <option value="monthly">Monthly</option>
-                                <option value="Special">Special</option>
+                                <option value="special">Special</option>
                             </select>
                         </div>
                         {session && session.user && (session.user.type == 'admin') && <div className="form-group mb-3 col-md-5">
@@ -189,21 +194,8 @@ function Write({ login }) {
                         </div>
                         <div className="form-group mb-3">
                             <label htmlFor="content">Content</label>
-                            <Editor
-                                id="content-editor"
-                                instanceId="content-editor"
-                                initialValue="<p>Start writing here...</p>"
-                                init={{
-                                    height: 500,
-                                    skin: "oxide",
-                                    plugins:
-                                        'advlist autolink lists link image charmap preview anchor\
-                                    searchreplace visualblocks code fullscreen\
-                                    insertdatetime media table code help wordcount',
-                                    toolbar: 'undo redo | styles | bold italic strikethrough forecolor backcolor | alignleft aligncenter alignright alignjustify | outdent indent | bullist numlist | formatselect | removeformat',
-                                }}
-                                onEditorChange={handleEditorChange}
-                                value={blog.content}
+                            <CustomEditor
+                                onChange={handleEditorChange}
                             />
                         </div>
                     </div>
