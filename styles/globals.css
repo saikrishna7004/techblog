@@ -650,3 +650,7 @@ label {
 img {
 	max-width: 100% !important;
 }
+
+.ck *{
+	color: #000;
+}

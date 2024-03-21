@@ -2,13 +2,17 @@ import { useRouter } from 'next/router'
 import React, { useEffect, useState } from 'react'
 import { formatDistanceToNow } from 'date-fns'
 import { Shimmer } from 'react-shimmer'
-import { Editor } from '@tinymce/tinymce-react'
 import Link from 'next/link'
 import Swal from 'sweetalert2'
 import { getSession, useSession } from 'next-auth/react'
 import Head from 'next/head'
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 import { faAngleLeft } from '@fortawesome/free-solid-svg-icons'
+import dynamic from 'next/dynamic'
+
+const CustomEditor = dynamic(() => {
+    return import('../../../components/custom-editor');
+}, { ssr: false });
 
 const BlogPost = ({ login, allowed }) => {
     const router = useRouter()
@@ -233,29 +237,9 @@ const BlogPost = ({ login, allowed }) => {
                                 </div>
                             </div>
                             <div className="mx-4 mb-4">
-                                <Editor
-                                    id="content-editor"
-                                    inline={true}
-                                    instanceId="content-editor"
-                                    init={{
-                                        height: 500,
-                                        skin: "oxide",
-                                        plugins:
-                                            'advlist autolink lists link image charmap preview anchor\
-                                        searchreplace visualblocks code fullscreen\
-                                        insertdatetime media table code help wordcount',
-                                        toolbar: 'undo redo | styles | bold italic strikethrough forecolor backcolor | alignleft aligncenter alignright alignjustify | outdent indent | bullist numlist | formatselect | removeformat',
-                                        setup: (editor) => {
-                                            editor.on('init', () => {
-                                                const body = editor.getBody();
-                                                body.classList.add('border-hover');
-                                                body.classList.add('px-3');
-                                                body.style.paddingTop = '40px'
-                                            });
-                                        },
-                                    }}
-                                    onEditorChange={handleEditorChange}
-                                    value={blog.content}
+                                <CustomEditor
+                                    onChange={handleEditorChange}
+                                    initialData={blog.content}
                                 />
                                 <button type="submit" onClick={submitBlog} className="btn btn-primary my-4">Submit</button>
                             </div>
